@@ -1,5 +1,7 @@
 ﻿using Entities;
+using GameUI;
 using Managers;
+using System.Security.Permissions;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
@@ -29,7 +31,9 @@ namespace PlayerSystem
             this.raycastingCamera = Camera.main;
             this.Agent = GetComponent<NavMeshAgent>();
 
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.CheckKeyboard);
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.RightClick);
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.LeftClick);
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.UpdateOnTarget);
         }
 
@@ -62,6 +66,16 @@ namespace PlayerSystem
         }
 
 
+        [SerializeField] private AttackIndicator attackIndicator;
+        private void CheckKeyboard()
+        {
+            if (Input.GetKeyDown(KeyCode.A) &
+                !this.attackIndicator.On)
+                    this.attackIndicator.TurnOn();
+                
+        }
+
+
         public NavMeshAgent Agent { get; private set; }
         private Camera raycastingCamera;
         private void RightClick()
@@ -70,8 +84,7 @@ namespace PlayerSystem
                 return;
 
             bool hittableHit = this.RaycastAtMousePoint(this.hittableHitResults, 1 << 10);
-            if (hittableHit)
-            {
+            if (hittableHit) {
                 Transform hittableTransform = this.hittableHitResults[0].transform;
                 this.Target = hittableTransform;
                 var hittable = hittableTransform.GetComponent(typeof(IHittable)) as IHittable;
@@ -81,12 +94,21 @@ namespace PlayerSystem
             }
 
             bool groundHit = this.RaycastAtMousePoint(this.groundHitResults, (1 << 9));
-            if (groundHit)
-            {
+            if (groundHit) {
                 var destinationGround = this.groundHitResults[0].point;
                 Agent.SetDestination(destinationGround);
                 this.CancelActions();
             }
+        }
+
+
+        private void LeftClick()
+        {
+            if (!Input.GetMouseButtonDown(0))
+                return;
+
+            if (this.attackIndicator.On)
+                this.attackIndicator.TurnOff();
         }
 
 
