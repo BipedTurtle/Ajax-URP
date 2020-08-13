@@ -72,7 +72,6 @@ namespace PlayerSystem
             if (Input.GetKeyDown(KeyCode.A) &
                 !this.attackIndicator.On)
                     this.attackIndicator.TurnOn();
-                
         }
 
 
@@ -82,6 +81,13 @@ namespace PlayerSystem
         {
             if (!Input.GetMouseButtonDown(1))
                 return;
+
+            if (this.attackIndicator.On) {
+                this.attackIndicator.TurnOff();
+                this.Target = null;
+                return;
+            }
+
 
             bool hittableHit = this.RaycastAtMousePoint(this.hittableHitResults, 1 << 10);
             if (hittableHit) {
@@ -106,9 +112,17 @@ namespace PlayerSystem
         {
             if (!Input.GetMouseButtonDown(0))
                 return;
-
-            if (this.attackIndicator.On)
+            
+            // if attack indicator is directly on an enemy, set it as target; otherwise find the closest enemy from the cursor and then set it as the target
+            if (this.attackIndicator.On) {
                 this.attackIndicator.TurnOff();
+
+                bool cursorOnHittable = this.RaycastAtMousePoint(this.hittableHitResults, 1 << 10);
+                if (cursorOnHittable)
+                    this.Target = this.hittableHitResults[0].transform;
+                else
+                    this.Target = ControlUtility.GetClosestEnemyFromCursor();
+            }
         }
 
 
