@@ -1,6 +1,7 @@
 ﻿using Entities;
 using GameUI;
 using Managers;
+using PlayerSystem.Skills;
 using System.Security.Permissions;
 using UnityEditor;
 using UnityEngine;
@@ -67,11 +68,17 @@ namespace PlayerSystem
 
 
         [SerializeField] private AttackIndicator attackIndicator;
-        private void CheckKeyboard()
+        private async void CheckKeyboard()
         {
             if (Input.GetKeyDown(KeyCode.A) &
                 !this.attackIndicator.On)
                     this.attackIndicator.TurnOn();
+
+            if (Input.GetKeyDown(KeyCode.F)) {
+                Debug.Log("backshot");
+                var backShot = await SkillsLibrary.GetBackShot();
+                backShot.Execute();
+            }
         }
 
 
@@ -126,7 +133,7 @@ namespace PlayerSystem
         }
 
 
-        private void CancelActions()
+        public void CancelActions()
         {
             this.Target = null;
             this.rotationProgress = 0;

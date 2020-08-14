@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PlayerSystem
+namespace PlayerSystem.Skills
 {
     public abstract class Skill : ScriptableObject
     {

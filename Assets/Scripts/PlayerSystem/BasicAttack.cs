@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PlayerSystem
+namespace PlayerSystem.Skills
 {
     [CreateAssetMenu(fileName = "BasicAttack", menuName = "PlayerSystem/Skills/BasicAttack")]
     public class BasicAttack : Skill

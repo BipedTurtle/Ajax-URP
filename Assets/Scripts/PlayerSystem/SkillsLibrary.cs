@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using PlayerSystem.Skills;
+using System;
 using System.Threading.Tasks;
-using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace PlayerSystem
@@ -14,8 +11,17 @@ namespace PlayerSystem
         public async static Task<BasicAttack> GetBasicAttack()
         {
             if (basicAttack == null)
-                basicAttack = await Addressables.LoadAssetAsync<BasicAttack>("Skills/BasicAttack.asset").Task;
+                basicAttack = await Addressables.LoadAssetAsync<BasicAttack>("Skills/BasicAttackRanged.asset").Task;
             return basicAttack;
+        }
+
+
+        private static BackShot backShot;
+        public async static Task<BackShot> GetBackShot()
+        {
+            if (backShot == null)
+                backShot = await Addressables.LoadAssetAsync<BackShot>("Skills/BackSho.asset").Task;
+            return backShot;
         }
     }
 }

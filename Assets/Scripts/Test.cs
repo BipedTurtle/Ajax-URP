@@ -9,19 +9,21 @@ namespace Scripts
 {
     public class Test : MonoBehaviour
     {
-        private float distanceToMove = 5f;
-        private float distanceMoved;
-        private void Update()
+        private async void Start()
         {
-            if (distanceMoved > distanceToMove)
-            {
-                Debug.Log($"center after movement: {GetComponent<Collider>().bounds.center}");
-                return;
-            }
+            await SayHi();
 
-            var movment = this.distanceToMove * Time.deltaTime;
-            transform.localPosition += Vector3.right * movment;
-            distanceMoved += movment;
+            Debug.Log("i'm done with this say hi shit");
+        }
+
+
+        private async Task SayHi()
+        {
+            Debug.Log("wait till I say hi...");
+
+            await Task.Delay(3000);
+
+            Debug.Log("now I say hi!");
         }
     }
 }

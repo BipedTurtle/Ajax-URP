@@ -13,8 +13,6 @@ namespace GameUI
         {
             this.canvas = GetComponent<Canvas>();
             this.indicator = GetComponentInChildren<Image>();
-
-            UpdateManager.Instance.SubscribeToGlobalUpdate(this.FollowCursor);
         }
 
 
