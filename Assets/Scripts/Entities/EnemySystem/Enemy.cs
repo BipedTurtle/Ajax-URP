@@ -5,21 +5,20 @@ namespace Entities.EnemySystem
 {
     public class Enemy : MonoBehaviour, IHittable
     {
-        public static List<Enemy> EnemiesAlive { get; } = new List<Enemy>(20);
         private void OnEnable()
         {
-            EnemiesAlive.Add(this);
+            InteractionChart.Instance.AddEnemy(this);
         }
 
 
         private void OnDisable()
         {
-            EnemiesAlive.Remove(this);
+            InteractionChart.Instance.RemoveEnemy(this);
         }
 
 
         [SerializeField] private float health;
-        public void OnHit()
+        public virtual void OnHit()
         {
             Debug.Log("i'm hit");
         }

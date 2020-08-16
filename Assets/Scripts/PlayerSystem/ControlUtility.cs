@@ -1,5 +1,7 @@
-﻿using Entities.EnemySystem;
+﻿using Entities;
+using Entities.EnemySystem;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using Utility;
 
 namespace PlayerSystem
@@ -23,9 +25,11 @@ namespace PlayerSystem
             var cursorWorldPoint = MainCamera.ScreenToWorldPoint(Input.mousePosition).Set(y: .5f);
 
             Enemy closestEnemy = null;
+
             float closestEnemySqrDistance = 0;
-            for (int i = 0; i < Enemy.EnemiesAlive.Count; i++) {
-                var enemy = Enemy.EnemiesAlive[i];
+            var enemiesAlive = InteractionChart.Instance.EnemiesAlive;
+            for (int i = 0; i < enemiesAlive.Count; i++) {
+                var enemy = enemiesAlive[i];
                 float toEnemySqrDistance = (enemy.transform.localPosition - cursorWorldPoint).sqrMagnitude;
                 bool withinDistance = toEnemySqrDistance <= proximityTreshold * proximityTreshold;
 
