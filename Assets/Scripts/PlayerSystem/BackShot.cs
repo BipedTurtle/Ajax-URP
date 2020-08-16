@@ -1,5 +1,8 @@
 ﻿using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using Utility;
 
 namespace PlayerSystem.Skills
 {
@@ -8,6 +11,7 @@ namespace PlayerSystem.Skills
     {
         public async override void Execute()
         {
+            this.InstantiateArrow();
             await this.SlideBackwards();
         }
 
@@ -22,7 +26,6 @@ namespace PlayerSystem.Skills
             player.Agent.ResetPath();
 
             var moveDirection = -player.transform.forward;
-            Vector3 destination = player.transform.localPosition + moveDirection * this.movementAmount;
 
             var movementThisFrame = this.movementAmount * Time.deltaTime * this.slideSpeed;
             while (distanceMoved < this.movementAmount) {
@@ -32,6 +35,22 @@ namespace PlayerSystem.Skills
             }
 
             this.distanceMoved = 0;
+        }
+
+
+        [SerializeField] private AssetReferenceGameObject arrowReference;
+        private async void InstantiateArrow()
+        {
+            var player = PlayerController.Instance;
+            var playerPoolingData = PlayerController.Instance.playerPoolingData;
+
+            var arrowPool = await Pool.GetPool(this.arrowReference, playerPoolingData);
+            var offset = player.transform.forward * .7f;
+            var spawnPos = player.transform.localPosition + offset;
+            Debug.Log(arrowPool.ObjectList.Count);
+            var arrow = arrowPool.GetPooledObjectAt(spawnPos, player.transform.localRotation);
+
+            arrow.transform.SetPositionAndRotation(spawnPos, player.transform.localRotation);
         }
 
     }

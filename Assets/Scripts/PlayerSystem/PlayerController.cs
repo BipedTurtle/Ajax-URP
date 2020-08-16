@@ -1,9 +1,6 @@
 ﻿using Entities;
 using GameUI;
 using Managers;
-using PlayerSystem.Skills;
-using System.Security.Permissions;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -12,6 +9,7 @@ namespace PlayerSystem
     public class PlayerController : MonoBehaviour
     {
         [SerializeField] private PlayerInfo playerInfo;
+        public PoolingData playerPoolingData;
 
         #region Singleton
         public static PlayerController Instance { get; private set; }
@@ -75,7 +73,6 @@ namespace PlayerSystem
                     this.attackIndicator.TurnOn();
 
             if (Input.GetKeyDown(KeyCode.F)) {
-                Debug.Log("backshot");
                 var backShot = await SkillsLibrary.GetBackShot();
                 backShot.Execute();
             }
