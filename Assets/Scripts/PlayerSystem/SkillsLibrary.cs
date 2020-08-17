@@ -1,27 +1,15 @@
 ﻿using PlayerSystem.Skills;
 using System;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace PlayerSystem
 {
-    public static class SkillsLibrary
+    [CreateAssetMenu(fileName = "SkillsLibrary", menuName = "SkillsLibrary")]
+    public class SkillsLibrary : ScriptableObject
     {
-        private static BasicAttack basicAttack;
-        public async static ValueTask<BasicAttack> GetBasicAttack()
-        {
-            if (basicAttack == null)
-                basicAttack = await Addressables.LoadAssetAsync<BasicAttack>("Skills/BasicAttackRanged.asset").Task;
-            return basicAttack;
-        }
-
-
-        private static BackShot backShot;
-        public async static ValueTask<BackShot> GetBackShot()
-        {
-            if (backShot == null)
-                backShot = await Addressables.LoadAssetAsync<BackShot>("Skills/BackSho.asset").Task;
-            return backShot;
-        }
+        public BasicAttack basicAttack;
+        public BackShot backShot;
     }
 }

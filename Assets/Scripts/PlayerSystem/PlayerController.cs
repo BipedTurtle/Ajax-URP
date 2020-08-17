@@ -9,7 +9,8 @@ namespace PlayerSystem
     public class PlayerController : MonoBehaviour
     {
         [SerializeField] private PlayerInfo playerInfo;
-        public PoolingData playerPoolingData;
+        [SerializeField] private SkillsLibrary skillsLibrary;
+        public PoolingData weaponsAndEffectsPoolingData;
 
         #region Singleton
         public static PlayerController Instance { get; private set; }
@@ -38,7 +39,7 @@ namespace PlayerSystem
 
 
         public Transform Target { get; private set; }
-        private async void UpdateOnTarget()
+        private void UpdateOnTarget()
         {
             if (Target == null |
                 Time.frameCount % 2 != 0)
@@ -46,8 +47,7 @@ namespace PlayerSystem
 
             this.TurnTowardsTarget();
 
-            var basicAttack = await SkillsLibrary.GetBasicAttack();
-            basicAttack.Execute();
+            this.skillsLibrary.basicAttack.Execute();
         }
 
 
@@ -66,17 +66,14 @@ namespace PlayerSystem
 
 
         [SerializeField] private AttackIndicator attackIndicator;
-        private async void CheckKeyboard()
+        private void CheckKeyboard()
         {
             if (Input.GetKeyDown(KeyCode.A) &
                 !this.attackIndicator.On)
                 this.attackIndicator.TurnOn();
 
             if (Input.GetKeyDown(KeyCode.F))
-            {
-                var backShot = await SkillsLibrary.GetBackShot();
-                backShot.Execute();
-            }
+                this.skillsLibrary.backShot.Execute();
         }
 
 
