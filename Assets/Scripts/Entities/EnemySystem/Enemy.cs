@@ -18,6 +18,8 @@ namespace Entities.EnemySystem
 
 
         [SerializeField] private float health;
+        public Vector3 Position => transform.localPosition;
+
         public virtual void OnHit()
         {
             Debug.Log("i'm hit");

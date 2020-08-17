@@ -19,7 +19,7 @@ namespace PlayerSystem.Skills
         [SerializeField] private float movementAmount = 2f;
         [SerializeField] private float slideSpeed = 2f;
         private float distanceMoved;
-        private async Task SlideBackwards()
+        private async ValueTask SlideBackwards()
         {
             var player = PlayerController.Instance;
             player.CancelActions();
@@ -47,7 +47,6 @@ namespace PlayerSystem.Skills
             var arrowPool = await Pool.GetPool(this.arrowReference, playerPoolingData);
             var offset = player.transform.forward * .7f;
             var spawnPos = player.transform.localPosition + offset;
-            Debug.Log(arrowPool.ObjectList.Count);
             var arrow = arrowPool.GetPooledObjectAt(spawnPos, player.transform.localRotation);
 
             arrow.transform.SetPositionAndRotation(spawnPos, player.transform.localRotation);

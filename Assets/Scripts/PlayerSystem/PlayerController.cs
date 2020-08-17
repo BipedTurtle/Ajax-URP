@@ -70,9 +70,10 @@ namespace PlayerSystem
         {
             if (Input.GetKeyDown(KeyCode.A) &
                 !this.attackIndicator.On)
-                    this.attackIndicator.TurnOn();
+                this.attackIndicator.TurnOn();
 
-            if (Input.GetKeyDown(KeyCode.F)) {
+            if (Input.GetKeyDown(KeyCode.F))
+            {
                 var backShot = await SkillsLibrary.GetBackShot();
                 backShot.Execute();
             }
