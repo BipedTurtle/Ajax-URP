@@ -1,8 +1,6 @@
 ﻿using PlayerSystem.Skills;
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace PlayerSystem
 {
@@ -11,5 +9,44 @@ namespace PlayerSystem
     {
         public BasicAttack basicAttack;
         public BackShot backShot;
+
+
+        public Action GetSkillsKeyCheck(PlayerClass playerClass)
+        {
+            switch (playerClass)
+            {
+                case PlayerClass.Melee:
+                    return SkillsKeyCheck_Melee;
+                case PlayerClass.Ranged:
+                    return SkillsKeyCheck_Ranged;
+                case PlayerClass.Magician:
+                    return SkillsKeyCheck_Magician;
+                default:
+                    return SkillsKeyCheck_Ranged;
+            }
+        }
+
+
+        private void SkillsKeyCheck_Melee()
+        {
+
+        }
+
+
+        private void SkillsKeyCheck_Ranged()
+        {
+            if (Input.GetKeyDown(KeyCode.F))
+                this.backShot.DisplayIndicator();
+            if (Input.GetKeyUp(KeyCode.F)) {
+                this.backShot.Execute();
+                this.backShot.DisableIndicator();
+            }
+        }
+
+
+        private void SkillsKeyCheck_Magician()
+        {
+
+        }
     }
 }

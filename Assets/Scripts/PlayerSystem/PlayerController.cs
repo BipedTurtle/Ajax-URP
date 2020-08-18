@@ -1,6 +1,7 @@
 ﻿using Entities;
 using GameUI;
 using Managers;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -30,6 +31,8 @@ namespace PlayerSystem
         {
             this.raycastingCamera = Camera.main;
             this.Agent = GetComponent<NavMeshAgent>();
+
+            this.skillsKeyCheck = this.skillsLibrary.GetSkillsKeyCheck(this.playerInfo.playerClass);
 
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.CheckKeyboard);
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.RightClick);
@@ -66,14 +69,14 @@ namespace PlayerSystem
 
 
         [SerializeField] private AttackIndicator attackIndicator;
+        private Action skillsKeyCheck;
         private void CheckKeyboard()
         {
             if (Input.GetKeyDown(KeyCode.A) &
                 !this.attackIndicator.On)
                 this.attackIndicator.TurnOn();
 
-            if (Input.GetKeyDown(KeyCode.F))
-                this.skillsLibrary.backShot.Execute();
+            this.skillsKeyCheck();
         }
 
 

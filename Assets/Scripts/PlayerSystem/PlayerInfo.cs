@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace PlayerSystem
 {
@@ -12,5 +7,8 @@ namespace PlayerSystem
     {
         [SerializeField] private float _range = 3f;
         public float Range => _range;
+
+
+        public PlayerClass playerClass;
     }
 }
