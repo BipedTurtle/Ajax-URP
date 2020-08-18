@@ -9,7 +9,7 @@ namespace PlayerSystem
 {
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] private PlayerInfo playerInfo;
+        public PlayerInfo playerInfo;
         [SerializeField] private SkillsLibrary skillsLibrary;
         public PoolingData weaponsAndEffectsPoolingData;
 

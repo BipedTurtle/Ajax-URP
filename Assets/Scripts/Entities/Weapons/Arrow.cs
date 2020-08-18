@@ -1,4 +1,5 @@
 ﻿using Managers;
+using System.Collections;
 using UnityEngine;
 using Utility;
 
@@ -12,6 +13,7 @@ namespace Entities.Weapons
 
         private void OnEnable()
         {
+            this.distanceFlew = 0;
             UpdateManager.Instance.SubscribeToGlobalFixedUpdate(this.Fly);
         }
 
@@ -22,9 +24,20 @@ namespace Entities.Weapons
         }
 
 
+        public void SetFlightDistance(float flightDistance)
+            => this.flightDistance = flightDistance;
+
+
+        private float flightDistance = 3f;
+        private float distanceFlew;
         private void Fly()
         {
-            var movementThisFrame = transform.forward * flySpeed * Time.fixedDeltaTime;
+            if (!gameObject.activeInHierarchy)
+                return;
+
+            var movementAmount = flySpeed * Time.fixedDeltaTime;
+            this.distanceFlew += movementAmount;
+            var movementThisFrame = transform.forward * movementAmount;
             transform.localPosition += movementThisFrame;
 
             var collisionResult = this.CheckCollision();
@@ -33,7 +46,11 @@ namespace Entities.Weapons
                 collisionResult.OnHit();
                 Pool.ReturnToPool(gameObject);
             }
+
+            if (this.distanceFlew >= this.flightDistance)
+                Pool.ReturnToPool(gameObject);
         }
+
 
 
         private IHittable CheckCollision()
@@ -42,7 +59,6 @@ namespace Entities.Weapons
             for (int i = 0; i < hittablesActive.Count; i++) {
                 var hittable = hittablesActive[i];
                 var sqrDistance = (hittable.Position - this.collisionPoint.position).Set(y: 0).sqrMagnitude;
-                //Debug.Log($"arrow pos: {collisionPoint.position}, targetPos: {hittable.Position}\nsqrDistance: {sqrDistance}");
                 bool withinRange = sqrDistance < Mathf.Pow(this.collisionRadius, 2);
 
                 if (withinRange)
