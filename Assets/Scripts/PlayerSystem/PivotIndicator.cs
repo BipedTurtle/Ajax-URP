@@ -31,9 +31,7 @@ namespace PlayerSystem
         {
             Vector3 center = PlayerController.Instance.transform.localPosition;
 
-            Vector3 mousePositionWorld = this.mainCamera.ScreenToWorldPoint(Input.mousePosition.Set(z: this.zDepth));
-            var playerPos = PlayerController.Instance.transform.localPosition;
-            var toCursorVector = (mousePositionWorld - playerPos).Set(y: 0);
+            var toCursorVector = ControlUtility.GetPlayerToCursorVector();
             var lookRotation = Quaternion.LookRotation(toCursorVector);
 
             transform.SetPositionAndRotation(center, lookRotation);

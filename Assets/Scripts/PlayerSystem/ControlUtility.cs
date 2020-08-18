@@ -50,6 +50,22 @@ namespace PlayerSystem
 
             return (closestEnemy == null) ? null : closestEnemy.transform;
         }
+
+
+        public static Vector3 GetMousePositionWorld()
+        {
+            float zDepth = MainCamera.transform.localPosition.y;
+            return MainCamera.ScreenToWorldPoint(Input.mousePosition.Set(z: zDepth));
+        }
+
+
+        public static Vector3 GetPlayerToCursorVector()
+        {
+            var mousePositionWorld = GetMousePositionWorld();
+            var playerPos = PlayerController.Instance.transform.localPosition;
+            var toCursorVector = (mousePositionWorld - playerPos).Set(y: 0);
+            return toCursorVector;
+        }
     }
 
 }

@@ -1,5 +1,4 @@
 ﻿using Managers;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utility;
@@ -11,6 +10,7 @@ namespace PlayerSystem.Skills
     {
         public override void Execute()
         {
+            this.TurnTowardsCursorPosition();
             this.InstantiateArrow();
             UpdateManager.Instance.SubscribeToGlobalFixedUpdate(this.SlideBackwards);
         }
@@ -53,5 +53,12 @@ namespace PlayerSystem.Skills
             arrow.transform.SetPositionAndRotation(spawnPos, player.transform.localRotation);
         }
 
+
+        private void TurnTowardsCursorPosition()
+        {
+            var toCursorVector = ControlUtility.GetPlayerToCursorVector();
+            var player = PlayerController.Instance.transform;
+            player.localRotation = Quaternion.LookRotation(toCursorVector);
+        }
     }
 }
