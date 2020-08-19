@@ -7,7 +7,7 @@ namespace PlayerSystem
     [CreateAssetMenu(fileName = "SkillsLibrary", menuName = "SkillsLibrary")]
     public class SkillsLibrary : ScriptableObject
     {
-        public BasicAttack basicAttack;
+        public BasicAttackRanged basicAttack;
         public BackShot backShot;
 
 

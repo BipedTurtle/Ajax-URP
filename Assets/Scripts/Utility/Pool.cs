@@ -15,7 +15,7 @@ namespace Utility
 
         private AssetReferenceGameObject assetReference;
         private GameObject loadedAsset;
-        public async static ValueTask CreatePool(AssetReferenceGameObject reference, PoolingData poolingData)
+        public async static Task CreatePool(AssetReferenceGameObject reference, PoolingData poolingData)
         {
             if (ContainsReference(reference))
                 return;
@@ -44,7 +44,7 @@ namespace Utility
         }
 
 
-        public async static ValueTask<Pool> GetPool(AssetReferenceGameObject reference, PoolingData data = null)
+        public async static Task<Pool> GetPool(AssetReferenceGameObject reference, PoolingData data = null)
         {
             if (!ContainsReference(reference))
                 await CreatePool(reference, data ?? PoolManager.Instance.atBeginningPoolingData);

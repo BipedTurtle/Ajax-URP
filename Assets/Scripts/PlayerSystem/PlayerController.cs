@@ -61,7 +61,7 @@ namespace PlayerSystem
             var toTargetVector = this.Target.localPosition - transform.localPosition;
             var targetRotation = Quaternion.LookRotation(toTargetVector);
             this.rotationProgress += this.rotationAmount;
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, .18f);
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotation, .23f);
 
             if (this.rotationProgress >= 1f)
                 this.rotationProgress = 0;
