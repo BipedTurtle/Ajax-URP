@@ -1,4 +1,5 @@
-﻿using Entities.Weapons;
+﻿using Entities.Stats;
+using Entities.Weapons;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utility;
@@ -11,19 +12,28 @@ namespace PlayerSystem.Skills
         [SerializeField] private PlayerInfo playerInfo;
         private float nextAttack;
         public float attackInterval = 2f;
+        [SerializeField] private AssetReference attackInfoArchetype;
+        private AttackInfo attackInfo;
         private void OnEnable()
         {
             this.nextAttack = 0;
+
+            var attackInfoOperationHandle = this.attackInfoArchetype.LoadAssetAsync<AttackInfoArchetype>();
+            attackInfoOperationHandle.Completed += (op) =>
+            {
+                var archetype = op.Result;
+                this.attackInfo = archetype.Copy();
+
+                Addressables.Release(op);
+            };
         }
 
-
+        
         private Pool arrowPool;
         public override void Execute()
         {
             var player = PlayerController.Instance;
 
-            //bool aligned = this.TurnTowardsTarget();
-            //Debug.Log($"forward: {player.transform.forward}\naligned: {aligned}");
             bool targetInRange = (player.Target.localPosition - player.transform.localPosition).sqrMagnitude < Mathf.Pow(this.playerInfo.Range, 2);
             if (targetInRange) {
                 player.Agent.ResetPath();
@@ -53,26 +63,6 @@ namespace PlayerSystem.Skills
         }
 
 
-        private bool TurnTowardsTarget()
-        {
-            var player = PlayerController.Instance;
-
-            var toTargetVector = (player.Target.transform.localPosition - player.transform.localPosition).normalized;
-            var dotProduct = Vector3.Dot(player.transform.forward.Set(y: 0), toTargetVector.Set(y: 0));
-
-            if (dotProduct < .99f) {
-                var currentRotation = player.transform.localRotation;
-                var targetRotation = Quaternion.LookRotation(toTargetVector);
-                float progress = .2f;
-                player.transform.localRotation = Quaternion.Lerp(currentRotation, targetRotation, progress);
-
-                return false;
-            }
-
-            return true;
-        }
-
-
         [SerializeField] private AssetReferenceGameObject arrowReference;
         private void ShootArrow()
         {
@@ -81,8 +71,9 @@ namespace PlayerSystem.Skills
 
             var player = PlayerController.Instance.transform;
             var arrow = this.arrowPool.GetPooledObjectAt(player.localPosition, player.localRotation).GetComponent<Arrow>();
-            arrow.SetFlightDistance(this.playerInfo.Range);
 
+            arrow.SetFlightDistance(this.playerInfo.Range);
+            arrow.SetAttackInfo(this.attackInfo);
         }
     }
 }
