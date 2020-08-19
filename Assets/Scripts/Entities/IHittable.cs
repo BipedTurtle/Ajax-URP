@@ -1,11 +1,10 @@
-﻿using Entities.Stats;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Entities
 {
     public interface IHittable
     {
         Vector3 Position { get; }
-        void OnHit(AttackInfo attackInfo);
+        void OnHit();
     }
 }
