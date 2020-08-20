@@ -1,8 +1,10 @@
 ﻿using Entities;
+using Entities.Stats;
 using GameUI;
 using Managers;
 using System;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
 
 namespace PlayerSystem
@@ -13,6 +15,8 @@ namespace PlayerSystem
         [SerializeField] private SkillsLibrary skillsLibrary;
         public PoolingData weaponsAndEffectsPoolingData;
 
+        [SerializeField] private AssetReference playerStatsArchetype;
+        public EntityStats PlayerStats { get; private set; }
         #region Singleton
         public static PlayerController Instance { get; private set; }
         private void Awake()
@@ -23,6 +27,15 @@ namespace PlayerSystem
                 return;
             }
             Instance = this;
+
+
+            var statsOpHandle = this.playerStatsArchetype.LoadAssetAsync<EntityStatsArchetype>();
+            statsOpHandle.Completed += (op) =>
+            {
+                var archetype = op.Result;
+                this.PlayerStats = archetype.Copy();
+                Addressables.Release(op);
+            };
         }
         #endregion
 

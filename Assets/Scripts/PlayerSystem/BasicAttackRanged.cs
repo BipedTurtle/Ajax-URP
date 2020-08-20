@@ -1,4 +1,5 @@
-﻿using Entities.Weapons;
+﻿using Entities.Stats;
+using Entities.Weapons;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utility;
@@ -11,9 +12,20 @@ namespace PlayerSystem.Skills
         [SerializeField] private PlayerInfo playerInfo;
         private float nextAttack;
         public float attackInterval = 2f;
+        [SerializeField] private AttackInfoArchetype attackInfoArchetype;
+        private AttackInfo attackInfo;
         private void OnEnable()
         {
             this.nextAttack = 0;
+
+            this.attackInfo = this.attackInfoArchetype.Copy();
+            //var attackInfoOpHandle = this.attackInfoArchetype.LoadAssetAsync<AttackInfoArchetype>();
+            //attackInfoOpHandle.Completed += (op) =>
+            //{
+            //    var archetype = op.Result;
+            //    this.attackInfo = archetype.Copy();
+            //    //Addressables.Release(op);
+            //};
         }
 
 
@@ -22,9 +34,8 @@ namespace PlayerSystem.Skills
         {
             var player = PlayerController.Instance;
 
-            //bool aligned = this.TurnTowardsTarget();
-            //Debug.Log($"forward: {player.transform.forward}\naligned: {aligned}");
-            bool targetInRange = (player.Target.localPosition - player.transform.localPosition).sqrMagnitude < Mathf.Pow(this.playerInfo.Range, 2);
+            float range = player.PlayerStats.Range;
+            bool targetInRange = (player.Target.localPosition - player.transform.localPosition).sqrMagnitude < Mathf.Pow(range, 2);
             if (targetInRange) {
                 player.Agent.ResetPath();
                 this.AttackIfPossible();
@@ -45,31 +56,11 @@ namespace PlayerSystem.Skills
             var toTargetVector = (player.Target.transform.localPosition - player.transform.localPosition).normalized;
             var dotProduct = Vector3.Dot(player.transform.forward.Set(y: 0), toTargetVector.Set(y: 0));
             bool aligned = dotProduct > .999f;
-
+            
             if (attackCoolHasReturned & aligned) {
                 this.ShootArrow();
                 this.nextAttack = Time.time + attackInterval;
             }
-        }
-
-
-        private bool TurnTowardsTarget()
-        {
-            var player = PlayerController.Instance;
-
-            var toTargetVector = (player.Target.transform.localPosition - player.transform.localPosition).normalized;
-            var dotProduct = Vector3.Dot(player.transform.forward.Set(y: 0), toTargetVector.Set(y: 0));
-
-            if (dotProduct < .99f) {
-                var currentRotation = player.transform.localRotation;
-                var targetRotation = Quaternion.LookRotation(toTargetVector);
-                float progress = .2f;
-                player.transform.localRotation = Quaternion.Lerp(currentRotation, targetRotation, progress);
-
-                return false;
-            }
-
-            return true;
         }
 
 
@@ -79,10 +70,10 @@ namespace PlayerSystem.Skills
             if (this.arrowPool == null)
                 this.arrowPool = Pool.GetPool(this.arrowReference).Result;
 
-            var player = PlayerController.Instance.transform;
-            var arrow = this.arrowPool.GetPooledObjectAt(player.localPosition, player.localRotation).GetComponent<Arrow>();
-            arrow.SetFlightDistance(this.playerInfo.Range);
-
+            var player = PlayerController.Instance;
+            var arrow = this.arrowPool.GetPooledObjectAt(player.transform.localPosition, player.transform.localRotation).GetComponent<Arrow>();
+            arrow.SetFlightDistance(player.PlayerStats.Range);
+            arrow.SetAttackInfo(this.attackInfo);
         }
     }
 }

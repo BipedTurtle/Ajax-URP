@@ -53,7 +53,7 @@ namespace PlayerSystem.Skills
             var offset = player.transform.forward * .7f;
             var spawnPos = player.transform.localPosition + offset;
             var arrow = arrowPool.GetPooledObjectAt(spawnPos, player.transform.localRotation);
-            arrow.GetComponent<Arrow>().SetFlightDistance(player.playerInfo.Range);
+            arrow.GetComponent<Arrow>().SetFlightDistance(player.PlayerStats.Range);
 
             arrow.transform.SetPositionAndRotation(spawnPos, player.transform.localRotation);
         }

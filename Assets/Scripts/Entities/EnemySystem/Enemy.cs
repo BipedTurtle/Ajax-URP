@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Entities.Stats;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Entities.EnemySystem
 {
@@ -7,6 +9,7 @@ namespace Entities.EnemySystem
     {
         private void OnEnable()
         {
+            this.LoadStats();
             InteractionChart.Instance.AddEnemy(this);
         }
 
@@ -20,9 +23,32 @@ namespace Entities.EnemySystem
         [SerializeField] private float health;
         public Vector3 Position => transform.localPosition;
 
-        public virtual void OnHit()
+        public virtual void OnHit(AttackInfo attackInfo)
         {
-            Debug.Log("i'm hit");
+            this.enemyStats.ProcessAttack(attackInfo);
+
+            bool isDead = this.enemyStats.Health <= 0;
+            if (isDead)
+                this.Die();
+        }
+
+
+        private void Die()
+        {
+            Debug.Log("die");
+        }
+
+
+        [SerializeField] private AssetReference enemyStatsArchetype;
+        public EntityStats enemyStats;
+        private void LoadStats()
+        {
+            var statsOpHandle = this.enemyStatsArchetype.LoadAssetAsync<EntityStatsArchetype>();
+            statsOpHandle.Completed += (op) =>
+            {
+                var archetype = op.Result;
+                this.enemyStats = archetype.Copy();
+            };
         }
     }
 }
