@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Random = UnityEngine.Random;
 
 namespace Entities.Stats
@@ -90,7 +91,6 @@ namespace Entities.Stats
             damageTaken *= (isCriticalDamage) ? 2f : 1f; 
 
             this.Health -= damageTaken;
-
 
             Debug.Log($"DamageTaken: {damageTaken}\nHealth Remaining: {this.Health}");
         }
