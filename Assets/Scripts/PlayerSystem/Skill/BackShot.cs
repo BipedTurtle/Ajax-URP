@@ -7,9 +7,14 @@ using Utility;
 namespace PlayerSystem.Skills
 {
     [CreateAssetMenu(fileName = "BackShot", menuName = "PlayerSystem/Skills/BackShot")]
-    public class BackShot : Skill
+    public class BackShot : DamagingSkill
     {
-        public override void Execute()
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+        }
+
+        public void Execute()
         {
             this.TurnTowardsCursorPosition();
             this.InstantiateArrow();
@@ -52,8 +57,10 @@ namespace PlayerSystem.Skills
                 arrowPool = await Pool.GetPool(this.arrowReference, playerPoolingData);
             var offset = player.transform.forward * .7f;
             var spawnPos = player.transform.localPosition + offset;
-            var arrow = arrowPool.GetPooledObjectAt(spawnPos, player.transform.localRotation);
-            arrow.GetComponent<Arrow>().SetFlightDistance(player.PlayerStats.Range);
+            var arrow = arrowPool.GetPooledObjectAt(spawnPos, player.transform.localRotation).GetComponent<Arrow>();
+
+            arrow.SetFlightDistance(player.PlayerStats.Range);
+            arrow.SetAttackInfo(base.attackInfo);
 
             arrow.transform.SetPositionAndRotation(spawnPos, player.transform.localRotation);
         }

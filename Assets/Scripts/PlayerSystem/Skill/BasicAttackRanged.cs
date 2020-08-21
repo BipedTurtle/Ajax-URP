@@ -7,30 +7,20 @@ using Utility;
 namespace PlayerSystem.Skills
 {
     [CreateAssetMenu(fileName = "BasicAttack", menuName = "PlayerSystem/Skills/BasicAttack")]
-    public class BasicAttackRanged : Skill
+    public class BasicAttackRanged : DamagingSkill
     {
         [SerializeField] private PlayerInfo playerInfo;
         private float nextAttack;
         public float attackInterval = 2f;
-        [SerializeField] private AttackInfoArchetype attackInfoArchetype;
-        private AttackInfo attackInfo;
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             this.nextAttack = 0;
-
-            this.attackInfo = this.attackInfoArchetype.Copy();
-            //var attackInfoOpHandle = this.attackInfoArchetype.LoadAssetAsync<AttackInfoArchetype>();
-            //attackInfoOpHandle.Completed += (op) =>
-            //{
-            //    var archetype = op.Result;
-            //    this.attackInfo = archetype.Copy();
-            //    //Addressables.Release(op);
-            //};
         }
 
 
         private Pool arrowPool;
-        public override void Execute()
+        public void Execute()
         {
             var player = PlayerController.Instance;
 

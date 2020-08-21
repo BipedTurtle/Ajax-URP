@@ -38,8 +38,5 @@ namespace PlayerSystem.Skills
 
             this.indicatorGO.SetActive(false);
         }
-
-
-        public abstract void Execute();
     }
 }
