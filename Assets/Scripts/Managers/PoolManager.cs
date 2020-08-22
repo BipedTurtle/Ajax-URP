@@ -19,7 +19,7 @@ namespace Managers
         #endregion
 
         public PoolingData atBeginningPoolingData;
-        private void Start()
+        private async void Start()
         {
             Pool.ClearPool();
 
@@ -29,7 +29,7 @@ namespace Managers
             var pooledList = this.atBeginningPoolingData.toBePooledAtStart;
             for (int i = 0; i < pooledList.Count; i++) {
                 var pooled = pooledList[i];
-                Pool.CreatePool(pooled, atBeginningPoolingData);
+                await Pool.CreatePool(pooled, atBeginningPoolingData);
             }
         }
     }
