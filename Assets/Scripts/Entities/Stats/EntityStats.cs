@@ -27,6 +27,26 @@ namespace Entities.Stats
             }
         }
 
+        [SerializeField] private float _baseDamage;
+        public float BaseDamage
+        {
+            get => _baseDamage;
+            set
+            {
+                _baseDamage = Mathf.Clamp(value, 0, value);
+            }
+        }
+
+        public float _extraDaamge;
+        public float ExtraDamage
+        {
+            get => _extraDaamge;
+            set
+            {
+                _extraDaamge = Mathf.Clamp(value, 0, value);
+            }
+        }
+
         [SerializeField] private float _criticalChance;
         public float CriticalChance
         {
@@ -68,10 +88,12 @@ namespace Entities.Stats
         }
 
 
-        public EntityStats(float health, float mana, float criticalChance, float range, float movementSpeed, float armor)
+        public EntityStats(float health, float mana, float baseDamage, float extradmage, float criticalChance, float range, float movementSpeed, float armor)
         {
             this.Health = health;
             this.Mana = mana;
+            this.BaseDamage = baseDamage;
+            this.ExtraDamage = extradmage;
             this.CriticalChance = criticalChance;
             this.Range = range;
             this.MovementSpeed = movementSpeed;
@@ -80,14 +102,16 @@ namespace Entities.Stats
 
 
         private static Func<float, float> ArmorFormula = (armor) => (0.1f) * Mathf.Sqrt(armor);
-        public void ProcessAttack(AttackInfo info, Vector3 hitPosition)
+        public void ProcessAttack(EntityStats inflicter, SkillInfo skill, Vector3 hitPosition)
         {
             float dmgBlockedPercentage = ArmorFormula(this.Armor);
-            float damageTaken = info.Damage * (1f - dmgBlockedPercentage);
+            float totalDamage = inflicter.BaseDamage * skill.BaseDamageModifier + inflicter.ExtraDamage * skill.ExtraDaamgeModifier;
+            float damageTaken = totalDamage * (1f - dmgBlockedPercentage);
 
             float randomFloat = Random.Range(0, 1f);
             //Debug.Log($"random: {randomFloat}, critical Chance: {info.CriticalChance}");
-            bool isCriticalDamage = randomFloat <= info.CriticalChance;
+            float criticalThreshold = (skill.CriticalChance == 0) ? -1f : inflicter.CriticalChance + skill.CriticalChance;
+            bool isCriticalDamage = randomFloat <= criticalThreshold;
             damageTaken *= (isCriticalDamage) ? 2f : 1f;
 
             DamageUILoader.Instance.LoadDamageUI(damageTaken, hitPosition);

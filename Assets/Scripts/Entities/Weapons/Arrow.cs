@@ -1,6 +1,5 @@
 ﻿using Entities.Stats;
 using Managers;
-using System.Collections;
 using UnityEngine;
 using Utility;
 
@@ -29,9 +28,13 @@ namespace Entities.Weapons
             => this.flightDistance = flightDistance;
 
 
-        private AttackInfo attackInfo;
-        public void SetAttackInfo(AttackInfo attackInfo)
-            => this.attackInfo = attackInfo;
+        private SkillInfo skillInfo;
+        private EntityStats inflicter;
+        public void SetAttackInfo(EntityStats inflicterInfo, SkillInfo skillInfo)
+        {
+            this.inflicter = inflicterInfo; 
+            this.skillInfo = skillInfo;
+        }
 
 
         private float flightDistance = 3f;
@@ -49,7 +52,7 @@ namespace Entities.Weapons
             var collisionResult = this.CheckCollision();
             bool somethingIsHit = collisionResult != null;
             if (somethingIsHit) {
-                collisionResult.OnHit(this.attackInfo);
+                collisionResult.OnHit(this.inflicter, this.skillInfo);
                 Pool.ReturnToPool(gameObject);
             }
 

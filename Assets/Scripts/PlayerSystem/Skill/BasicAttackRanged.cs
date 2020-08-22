@@ -63,7 +63,7 @@ namespace PlayerSystem.Skills
             var player = PlayerController.Instance;
             var arrow = this.arrowPool.GetPooledObjectAt(player.transform.localPosition, player.transform.localRotation).GetComponent<Arrow>();
             arrow.SetFlightDistance(player.PlayerStats.Range);
-            arrow.SetAttackInfo(this.attackInfo);
+            arrow.SetAttackInfo(player.PlayerStats, this.skillInfo);
         }
     }
 }

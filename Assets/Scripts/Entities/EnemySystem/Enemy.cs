@@ -23,9 +23,9 @@ namespace Entities.EnemySystem
         [SerializeField] private float health;
         public Vector3 Position => transform.localPosition;
 
-        public virtual void OnHit(AttackInfo attackInfo)
+        public virtual void OnHit(EntityStats inflicterStats, SkillInfo skillInfo)
         {
-            this.enemyStats.ProcessAttack(attackInfo, transform.localPosition);
+            this.enemyStats.ProcessAttack(inflicterStats, skillInfo, transform.localPosition);
 
             bool isDead = this.enemyStats.Health <= 0;
             if (isDead)

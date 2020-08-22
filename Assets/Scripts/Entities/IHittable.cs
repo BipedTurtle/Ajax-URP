@@ -6,6 +6,6 @@ namespace Entities
     public interface IHittable
     {
         Vector3 Position { get; }
-        void OnHit(AttackInfo attackInfo);
+        void OnHit(EntityStats inflicterStats, SkillInfo skillInfo);
     }
 }

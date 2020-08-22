@@ -5,11 +5,11 @@ namespace PlayerSystem.Skills
 {
     public class DamagingSkill : Skill
     {
-        [SerializeField] protected AttackInfoArchetype attackInfoArchetype;
-        protected AttackInfo attackInfo;
+        [SerializeField] protected SkillInfoArchetype attackInfoArchetype;
+        protected SkillInfo skillInfo;
         protected virtual void OnEnable()
         {
-            this.attackInfo = this.attackInfoArchetype.Copy();
+            this.skillInfo = this.attackInfoArchetype.Copy();
         }
     }
 }

@@ -25,6 +25,29 @@ namespace Entities.Stats
             }
         }
 
+
+        [SerializeField] private float _baseDamage;
+        public float BaseDamage
+        {
+            get => _baseDamage;
+            set
+            {
+                _baseDamage = Mathf.Clamp(value, 0, value);
+            }
+        }
+
+
+        public float _extraDaamge;
+        public float ExtraDamage
+        {
+            get => _extraDaamge;
+            set
+            {
+                _extraDaamge = Mathf.Clamp(value, 0, value);
+            }
+        }
+
+
         [SerializeField] private float _criticalChance;
         public float CriticalChance
         {
@@ -72,6 +95,8 @@ namespace Entities.Stats
             => new EntityStats(
                 health: this.Health,
                 mana: this.Mana,
+                baseDamage: this.BaseDamage,
+                extradmage: this.ExtraDamage,
                 criticalChance: this.CriticalChance,
                 range: this.Range,
                 movementSpeed: this.MovementSpeed,
