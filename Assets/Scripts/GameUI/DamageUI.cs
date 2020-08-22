@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using TMPro;
 using UnityEngine;
 
@@ -12,29 +8,24 @@ namespace GameUI
     {
         [SerializeField] private TextMeshProUGUI tmp;
         private StringBuilder sb;
-        private void Awake()
-        {
-            this.sb = new StringBuilder();
-        }
-
-        private void OnEnable()
-        {
-            this.DisplayDamage(200f);
-        }
-
 
         private float VerticallyMoveTo => this.tmp.rectTransform.anchoredPosition.y + 30f;
-        private readonly float fadeTime = 1f;
-        public void DisplayDamage(float damage)
+        private readonly float fadeTime = .5f;
+        public void DisplayDamage(Vector2 spawnPos, float damage)
         {
+            this.tmp.rectTransform.anchoredPosition = spawnPos;
+
+            if (this.sb == null)
+                this.sb = new StringBuilder();
             this.sb.Clear();
 
             int roundedDamage = (int)damage;
             this.sb.Append(roundedDamage);
             this.tmp.text = this.sb.ToString();
 
+            gameObject.SetActive(true);
             LeanTween.value(gameObject, this.SetTextAlpha, from: 1f, to: 0, time: this.fadeTime);
-            LeanTween.moveY(this.tmp.rectTransform, this.VerticallyMoveTo, this.fadeTime);
+            LeanTween.moveY(this.tmp.rectTransform, this.VerticallyMoveTo, this.fadeTime).setOnComplete(this.ReturnToInactiveQueue);
         }
 
 
@@ -43,6 +34,12 @@ namespace GameUI
             var currentColor = this.tmp.color;
             currentColor.a = newAlpha;
             this.tmp.color = currentColor;
+        }
+
+
+        private void ReturnToInactiveQueue()
+        {
+            DamageUILoader.Instance.ReturnTMP(this);
         }
     }
 }

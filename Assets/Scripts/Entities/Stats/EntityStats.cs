@@ -1,6 +1,6 @@
-﻿using System;
+﻿using GameUI;
+using System;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Random = UnityEngine.Random;
 
 namespace Entities.Stats
@@ -80,19 +80,20 @@ namespace Entities.Stats
 
 
         private static Func<float, float> ArmorFormula = (armor) => (0.1f) * Mathf.Sqrt(armor);
-        public void ProcessAttack(AttackInfo info)
+        public void ProcessAttack(AttackInfo info, Vector3 hitPosition)
         {
             float dmgBlockedPercentage = ArmorFormula(this.Armor);
             float damageTaken = info.Damage * (1f - dmgBlockedPercentage);
 
             float randomFloat = Random.Range(0, 1f);
-            Debug.Log($"random: {randomFloat}, critical Chance: {info.CriticalChance}");
+            //Debug.Log($"random: {randomFloat}, critical Chance: {info.CriticalChance}");
             bool isCriticalDamage = randomFloat <= info.CriticalChance;
-            damageTaken *= (isCriticalDamage) ? 2f : 1f; 
+            damageTaken *= (isCriticalDamage) ? 2f : 1f;
 
+            DamageUILoader.Instance.LoadDamageUI(damageTaken, hitPosition);
+            
             this.Health -= damageTaken;
-
-            Debug.Log($"DamageTaken: {damageTaken}\nHealth Remaining: {this.Health}");
+            //Debug.Log($"DamageTaken: {damageTaken}\nHealth Remaining: {this.Health}");
         }
     }
 }

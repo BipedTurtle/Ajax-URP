@@ -25,7 +25,7 @@ namespace Entities.EnemySystem
 
         public virtual void OnHit(AttackInfo attackInfo)
         {
-            this.enemyStats.ProcessAttack(attackInfo);
+            this.enemyStats.ProcessAttack(attackInfo, transform.localPosition);
 
             bool isDead = this.enemyStats.Health <= 0;
             if (isDead)
