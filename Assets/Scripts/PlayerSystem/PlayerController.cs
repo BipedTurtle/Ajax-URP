@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using Assets.Scripts.PlayerSystem;
+using Entities;
 using Entities.Stats;
 using GameUI;
 using Managers;
@@ -9,11 +10,14 @@ using UnityEngine.AI;
 
 namespace PlayerSystem
 {
+    [RequireComponent(typeof(AuxilaryKeysChecker))]
     public class PlayerController : MonoBehaviour
     {
         public PlayerInfo playerInfo;
         [SerializeField] private SkillsLibrary skillsLibrary;
         public PoolingData weaponsAndEffectsPoolingData;
+        [SerializeField] private AssetReferenceGameObject _selfReference;
+        public AssetReferenceGameObject SelfReference => _selfReference;
 
         [SerializeField] private AssetReference playerStatsArchetype;
         public EntityStats PlayerStats { get; private set; }
