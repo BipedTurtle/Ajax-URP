@@ -16,15 +16,6 @@ namespace Entities.NPC_System
         private void Awake()
         {
             NPCsInTheScene.Add(this);
-
-            //var dialogueOpHandle = this.dialogueReference.LoadAssetAsync<Dialogue>();
-            //dialogueOpHandle.Completed += (op) =>
-            //{
-            //    this.dialogue = op.Result;
-            //    Debug.Log("dialogue loading");
-            //    Debug.Log(dialogue);
-            //    //Addressables.Release(op);
-            //};
         }
 
 
@@ -44,7 +35,7 @@ namespace Entities.NPC_System
             if (withinInteractionRange)
                 dialogue.StartDialogue();
 
-            Debug.Log($"interaction succeeded? {withinInteractionRange}");
+            //Debug.Log($"interaction succeeded? {withinInteractionRange}");
             return withinInteractionRange;
         }
 

@@ -5,13 +5,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using PlayerSystem;
+using UnityEngine.UI;
 
 namespace GameUI
 {
     public class DialogueCanvas : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI tmp;
-
+        [SerializeField] private Image backgroundImage;
 
         private Dictionary<string, int>.Enumerator dialogueEnumerator;
         private List<Transform> talkerTransforms = new List<Transform>();
@@ -22,6 +23,7 @@ namespace GameUI
 
             this.dialogueEnumerator = textToSpeakerDictionary.GetEnumerator();
 
+            #region Get Talkers' transforms
             var NPC_References = NPC.NPCsInTheScene.Select(npc => npc.SelfReference.RuntimeKey).ToList();
             var player = PlayerController.Instance;
             foreach (var talkerRef in talkersReferences) {
@@ -34,9 +36,10 @@ namespace GameUI
                 if (npc != null)
                     this.talkerTransforms.Add(npc.transform);
             }
+            #endregion
 
-            Debug.Log($"talkers Count: {this.talkerTransforms.Count}");
-            this.talkerTransforms.ForEach(t => Debug.Log(t.name));
+            //Debug.Log($"talkers Count: {this.talkerTransforms.Count}");
+            //this.talkerTransforms.ForEach(t => Debug.Log(t.name));
         }
 
 
@@ -49,7 +52,7 @@ namespace GameUI
             var keyValuePair = this.dialogueEnumerator.Current;
             this.tmp.text = keyValuePair.Key;
 
-            var talkerIndex = keyValuePair.Value;
+            var talkerIndex = keyValuePair.Value - 1;
             var talker = this.talkerTransforms[talkerIndex];
             this.SetDialogueLocation(talker);
 
@@ -66,6 +69,7 @@ namespace GameUI
             RectTransformUtility.ScreenPointToLocalPointInRectangle(thisCanvas, screenPoint, null, out Vector2 anchorPosition);
 
             this.tmp.rectTransform.anchoredPosition = anchorPosition;
+            this.backgroundImage.rectTransform.anchoredPosition = anchorPosition;
         }
     }
 }
