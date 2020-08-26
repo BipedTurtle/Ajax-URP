@@ -32,8 +32,10 @@ namespace Entities.NPC_System
             float sqrDistance = (PlayerController.Instance.transform.localPosition - transform.localPosition).sqrMagnitude;
             bool withinInteractionRange = sqrDistance < Mathf.Pow(this.interactionDistanceThreshold, 2);
 
-            if (withinInteractionRange)
-                dialogue.StartDialogue();
+            if (withinInteractionRange){
+                PlayerSpecificBehaviors.Instance.GoToDialoguePosition(this);
+                PlayerSpecificBehaviors.positioningFinished += dialogue.StartDialogue;
+            }
 
             return withinInteractionRange;
         }

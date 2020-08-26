@@ -51,10 +51,25 @@ namespace PlayerSystem
 
             this.skillsKeyCheck = this.skillsLibrary.GetSkillsKeyCheck(this.playerInfo.playerClass);
 
+            this.EnableInputs();
+        }
+
+
+        public void EnableInputs()
+        {
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.CheckKeyboard);
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.RightClick);
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.LeftClick);
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.UpdateOnTarget);
+        }
+
+
+        public void DisableInputs()
+        {
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.CheckKeyboard);
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.RightClick);
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.LeftClick);
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.UpdateOnTarget);
         }
 
 

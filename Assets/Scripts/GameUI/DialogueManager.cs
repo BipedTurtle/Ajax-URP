@@ -7,24 +7,30 @@ using UnityEngine.AddressableAssets;
 using PlayerSystem;
 using UnityEngine.UI;
 using Managers;
+using QuestSystem;
 
 namespace GameUI
 {
-    public class DialogueCanvas : MonoBehaviour
+    public class DialogueManager : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI tmp;
         [SerializeField] private Image backgroundImage;
 
         private Dictionary<string, int>.Enumerator dialogueEnumerator;
         private List<Transform> talkerTransforms = new List<Transform>();
-        public void Init(Dictionary<string, int> textToSpeakerDictionary, IEnumerable<AssetReferenceGameObject> talkersReferences)
+        private Dialogue dialogue;
+        public void Init(Dialogue dialogue)
         {
             this.mainCamera = Camera.main;
             this.canvas = GetComponent<Canvas>();
+            this.canvas.enabled = true;
+            this.dialogue = dialogue;
 
+            var textToSpeakerDictionary = dialogue.TextToSpeakerDictionary;
             this.dialogueEnumerator = textToSpeakerDictionary.GetEnumerator();
 
             #region Get Talkers' transforms
+            var talkersReferences = dialogue.TalkersReferences;
             var NPC_References = NPC.NPCsInTheScene.Select(npc => npc.SelfReference.RuntimeKey).ToList();
             var player = PlayerController.Instance;
             foreach (var talkerRef in talkersReferences) {
@@ -47,8 +53,7 @@ namespace GameUI
         public void DisplayDialogue()
         {
             if (!this.dialogueEnumerator.MoveNext()) {
-                Addressables.ReleaseInstance(gameObject);
-                UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.CheckPageFlip);
+                this.FinishDialogue();
                 return;
             }
 
@@ -82,6 +87,16 @@ namespace GameUI
         {
             if (Input.GetKeyDown(KeyCode.Space))
                 this.DisplayDialogue();
+        }
+
+
+        private void FinishDialogue()
+        {
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.CheckPageFlip);
+            QuestLibrary.BeginQuest(this.dialogue.questReference);
+            PlayerController.Instance.EnableInputs();
+            
+            Addressables.ReleaseInstance(gameObject);
         }
     }
 }
