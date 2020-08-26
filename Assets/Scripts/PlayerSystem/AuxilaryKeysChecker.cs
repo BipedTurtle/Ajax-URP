@@ -19,7 +19,6 @@ namespace Assets.Scripts.PlayerSystem
             if (!Input.GetKeyDown(KeyCode.T))
                 return;
 
-            Debug.Log("check npc interaction");
             foreach (var npc in NPC.NPCsInTheScene) {
                 bool interactionSucceeded = npc.Interact();
                 if (interactionSucceeded)

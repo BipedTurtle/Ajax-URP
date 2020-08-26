@@ -45,8 +45,6 @@ namespace Entities.NPC_System
                 int speaker = int.Parse(paragraph[0].ToString());
                 this.textToSpeakerDictionary[paragraph.Trim()] = speaker;
             }
-
-            Debug.Log(this.textToSpeakerDictionary.Count);
         }
     }
 }

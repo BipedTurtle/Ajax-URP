@@ -9,7 +9,7 @@ namespace Entities.Weapons
     {
         [SerializeField] private float flySpeed = 3f;
         [SerializeField] private Transform collisionPoint;
-        private readonly float collisionRadius = .5f;
+        private readonly float collisionRadius = .75f;
 
         private void OnEnable()
         {

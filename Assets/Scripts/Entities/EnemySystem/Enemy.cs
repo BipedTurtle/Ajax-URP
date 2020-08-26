@@ -1,6 +1,6 @@
 ﻿using Entities.Stats;
+using Managers;
 using QuestSystem;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -37,9 +37,9 @@ namespace Entities.EnemySystem
         [SerializeField] private AssetReference selfReference;
         private void Die()
         {
-            QuestObjectBuilder.Clear();
             QuestObjectBuilder.SetSubject(this.selfReference);
             QuestObjectBuilder.SetEventType(QuestEventType.Death);
+            QuestObjectBuilder.SetObject(ReferenceCenter.Instance.emptyReference);
             var questObject = QuestObjectBuilder.Build();
             QuestLibrary.UpdateQuestProgress(questObject);
             

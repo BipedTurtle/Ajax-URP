@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using PlayerSystem;
 using UnityEngine.UI;
+using Managers;
 
 namespace GameUI
 {
@@ -38,16 +39,18 @@ namespace GameUI
             }
             #endregion
 
-            //Debug.Log($"talkers Count: {this.talkerTransforms.Count}");
-            //this.talkerTransforms.ForEach(t => Debug.Log(t.name));
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.CheckPageFlip);
         }
 
 
         private Canvas canvas;
         public void DisplayDialogue()
         {
-            if (!this.dialogueEnumerator.MoveNext())
+            if (!this.dialogueEnumerator.MoveNext()) {
+                Addressables.ReleaseInstance(gameObject);
+                UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.CheckPageFlip);
                 return;
+            }
 
             var keyValuePair = this.dialogueEnumerator.Current;
             this.tmp.text = keyValuePair.Key;
@@ -62,14 +65,23 @@ namespace GameUI
 
 
         private Camera mainCamera;
+        private readonly Vector2 offset = new Vector2(0, 45f);
         private void SetDialogueLocation(Transform targetPosition)
         {
             var thisCanvas = GetComponent<RectTransform>();
             var screenPoint = this.mainCamera.WorldToScreenPoint(targetPosition.position);
             RectTransformUtility.ScreenPointToLocalPointInRectangle(thisCanvas, screenPoint, null, out Vector2 anchorPosition);
 
-            this.tmp.rectTransform.anchoredPosition = anchorPosition;
-            this.backgroundImage.rectTransform.anchoredPosition = anchorPosition;
+            var displayPosition = anchorPosition + this.offset;
+            this.tmp.rectTransform.anchoredPosition = displayPosition;
+            this.backgroundImage.rectTransform.anchoredPosition = displayPosition;
+        }
+
+
+        private void CheckPageFlip()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+                this.DisplayDialogue();
         }
     }
 }

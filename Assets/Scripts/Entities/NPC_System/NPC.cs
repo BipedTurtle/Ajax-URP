@@ -26,7 +26,7 @@ namespace Entities.NPC_System
         }
 
 
-        private readonly float interactionDistanceThreshold = 2f;
+        private readonly float interactionDistanceThreshold = 4f;
         public bool Interact()
         {
             float sqrDistance = (PlayerController.Instance.transform.localPosition - transform.localPosition).sqrMagnitude;
@@ -35,14 +35,7 @@ namespace Entities.NPC_System
             if (withinInteractionRange)
                 dialogue.StartDialogue();
 
-            //Debug.Log($"interaction succeeded? {withinInteractionRange}");
             return withinInteractionRange;
-        }
-
-
-        private void GetDialogueCanvas()
-        {
-
         }
     }
 }

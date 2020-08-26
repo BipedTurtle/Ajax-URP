@@ -32,7 +32,9 @@ namespace Utility
             for (int i = 0; i < spawnCount; i++) {
                 var opHandle = reference.InstantiateAsync(Vector3.zero, Quaternion.identity);
                 var instantiatedObject = await opHandle.Task;
+#if UNITY_EDITOR
                 instantiatedObject.name = $"{reference.editorAsset.name} - {Guid.NewGuid()}";
+#endif
                 pool.ObjectList.Add(instantiatedObject);
 #if UNITY_EDITOR
                 instantiatedObject.transform.SetParent(parent);

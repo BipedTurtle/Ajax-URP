@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine.AddressableAssets;
 using UnityEngine;
+using Managers;
 
 namespace QuestSystem
 {
@@ -28,7 +29,7 @@ namespace QuestSystem
             this.questFulfillCount = questFulfillCount;
 
             this.Subject = subject;
-            this.QuestEvent = questEvent;
+            this.QuestEvent = questEvent; 
             this.Object = @object;
         }
 
@@ -37,9 +38,12 @@ namespace QuestSystem
         {
             if (questObject.Subject.AssetGUID == this.Subject.AssetGUID &
                 questObject.QuestEvent == this.QuestEvent &
-                questObject.Object.AssetGUID == this.Object.AssetGUID) {
-                    this.CurrentCount++;
-                    return this.questObjectComplete; }
+                questObject.Object.AssetGUID == this.Object.AssetGUID)
+            {
+                this.CurrentCount++;
+                return this.questObjectComplete;
+            }
+
 
             return false;
         }
@@ -50,7 +54,7 @@ namespace QuestSystem
             if (EmptyReference.Instance == null)
                 return;
 
-            var emptyReference = EmptyReference.Instance.emptyReference;
+            var emptyReference = ReferenceCenter.Instance.emptyReference;
 
             this.Subject = emptyReference;
             this.QuestEvent = QuestEventType.None;
