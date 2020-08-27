@@ -1,7 +1,6 @@
 ﻿using Entities.NPC_System;
 using Managers;
 using System;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
 using Utility;
@@ -36,13 +35,13 @@ namespace PlayerSystem
 
             void CheckReachedPosition()
             {
-                float threshold = .05f;
+                float threshold = .01f;
                 bool destinationReached = this.agent.remainingDistance < threshold;
 
                 if (destinationReached) {
                     var lookVector = (npcTransform.localPosition - transform.localPosition).Set(y: 0);
                     var lookRotation = Quaternion.LookRotation(lookVector).eulerAngles;
-                    LeanTween.rotate(gameObject, lookRotation, .5f);
+                    LeanTween.rotate(gameObject, lookRotation, .25f);
 
                     UpdateManager.Instance.UnSubscribeFromGlobalUpdate(CheckReachedPosition);
                     positioningFinished?.Invoke();

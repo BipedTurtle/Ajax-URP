@@ -60,6 +60,11 @@ namespace GameUI
             var keyValuePair = this.dialogueEnumerator.Current;
             this.tmp.text = keyValuePair.Key;
 
+            var rectTransform = this.tmp.rectTransform;
+            var rectSize = new Vector2(rectTransform.rect.width, this.tmp.preferredHeight);
+            rectTransform.sizeDelta = rectSize;
+            this.backgroundImage.rectTransform.sizeDelta = rectSize;
+
             var talkerIndex = keyValuePair.Value - 1;
             var talker = this.talkerTransforms[talkerIndex];
             this.SetDialogueLocation(talker);
@@ -70,14 +75,16 @@ namespace GameUI
 
 
         private Camera mainCamera;
-        private readonly Vector2 offset = new Vector2(0, 45f);
+        private readonly Vector2 defaultOffset = new Vector2(0, 35f);
         private void SetDialogueLocation(Transform targetPosition)
         {
             var thisCanvas = GetComponent<RectTransform>();
             var screenPoint = this.mainCamera.WorldToScreenPoint(targetPosition.position);
             RectTransformUtility.ScreenPointToLocalPointInRectangle(thisCanvas, screenPoint, null, out Vector2 anchorPosition);
 
-            var displayPosition = anchorPosition + this.offset;
+            float boxHeight = this.tmp.rectTransform.rect.height / 2;
+            Vector2 totalOffset = this.defaultOffset + Vector2.up * boxHeight;
+            Vector2 displayPosition = anchorPosition + totalOffset;
             this.tmp.rectTransform.anchoredPosition = displayPosition;
             this.backgroundImage.rectTransform.anchoredPosition = displayPosition;
         }

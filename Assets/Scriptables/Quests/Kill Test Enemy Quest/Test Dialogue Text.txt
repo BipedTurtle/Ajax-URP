@@ -1,0 +1,12 @@
+#1-Messenger) It's your choice to walk out right now or venture in to the underworld.
+But I remind you that no matter what you do, you can't change your fate
+
+#2-Player) If that's the case, why did you bother to guide me here?
+
+#1-Messenger) Hades, too, knows you're bound to fail; but he respects your foolishness.
+A futile yet brave effort to overturn one's fate, that's what he adores
+
+#2-Player) The Oracle told me that. But tell the god that I don't believe in fate; I make
+my own path
+
+#1-Messenger) You just don't know what's ahead of you, son of Zeus
