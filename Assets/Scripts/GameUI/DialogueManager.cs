@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Entities.NPC_System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -8,6 +9,7 @@ using PlayerSystem;
 using UnityEngine.UI;
 using Managers;
 using QuestSystem;
+using System.Text;
 
 namespace GameUI
 {
@@ -25,6 +27,9 @@ namespace GameUI
             this.canvas = GetComponent<Canvas>();
             this.canvas.enabled = true;
             this.dialogue = dialogue;
+
+            this.waitForNextLetter = new WaitForSeconds(this.displaySpeed);
+            this.sb = new StringBuilder();
 
             var textToSpeakerDictionary = dialogue.TextToSpeakerDictionary;
             this.dialogueEnumerator = textToSpeakerDictionary.GetEnumerator();
@@ -58,8 +63,11 @@ namespace GameUI
             }
 
             var keyValuePair = this.dialogueEnumerator.Current;
-            this.tmp.text = keyValuePair.Key;
+            var paragraph = keyValuePair.Key;
+            this.sb.Clear();
+            this.sb.Append(paragraph);
 
+            this.tmp.text = paragraph;
             var rectTransform = this.tmp.rectTransform;
             var rectSize = new Vector2(rectTransform.rect.width, this.tmp.preferredHeight);
             rectTransform.sizeDelta = rectSize;
@@ -69,8 +77,34 @@ namespace GameUI
             var talker = this.talkerTransforms[talkerIndex];
             this.SetDialogueLocation(talker);
 
+            StartCoroutine(this.DisplayLetterByLetter());
+
             if (!this.canvas.enabled)
                 this.canvas.enabled = true;
+        }
+
+
+        [SerializeField] private float displaySpeed = .01f;
+        private WaitForSeconds waitForNextLetter;
+        private StringBuilder sb;
+        private IEnumerator DisplayLetterByLetter()
+        {
+            string originalText = this.sb.ToString();
+
+            int lettersCount = this.sb.Length;
+            this.sb.Clear();
+            this.sb.Append(' ', lettersCount);
+            this.tmp.text = this.sb.ToString();
+
+            int lettersDisplayIndex = 0;
+            while (lettersDisplayIndex < lettersCount) {
+                var letterToDisplay = originalText[lettersDisplayIndex];
+                sb.Replace(' ', letterToDisplay, lettersDisplayIndex, 1);
+                this.tmp.text = sb.ToString();
+
+                lettersDisplayIndex++;
+                yield return this.waitForNextLetter;
+            }
         }
 
 
@@ -92,8 +126,10 @@ namespace GameUI
 
         private void CheckPageFlip()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                StopAllCoroutines();
                 this.DisplayDialogue();
+            } 
         }
 
 
