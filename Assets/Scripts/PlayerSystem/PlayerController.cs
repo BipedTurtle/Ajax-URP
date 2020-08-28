@@ -7,6 +7,7 @@ using System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
+using Utility;
 
 namespace PlayerSystem
 {
@@ -86,17 +87,16 @@ namespace PlayerSystem
         }
 
 
-        private readonly float rotationAmount = .1f;
-        private float rotationProgress;
+        private readonly float rotationTime = .15f;
+        private LTDescr leanTweenRotation;
         private void TurnTowardsTarget()
         {
-            var toTargetVector = this.Target.localPosition - transform.localPosition;
-            var targetRotation = Quaternion.LookRotation(toTargetVector);
-            this.rotationProgress += this.rotationAmount;
-            transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotation, .23f);
+            if (this.leanTweenRotation != null)
+                return;
 
-            if (this.rotationProgress >= 1f)
-                this.rotationProgress = 0;
+            var toTargetVector = (this.Target.localPosition - transform.localPosition).Set(y: 0);
+            var targetRotation = Quaternion.LookRotation(toTargetVector);
+            this.leanTweenRotation = LeanTween.rotate(gameObject, targetRotation.eulerAngles, this.rotationTime).setOnComplete(() => this.leanTweenRotation = null);
         }
 
 
@@ -166,7 +166,11 @@ namespace PlayerSystem
         public void CancelActions()
         {
             this.Target = null;
-            this.rotationProgress = 0;
+            if (this.leanTweenRotation != null) {
+                var leanTweenID = this.leanTweenRotation.uniqueId;
+                LeanTween.cancel(leanTweenID);
+            }
+            this.leanTweenRotation = null;
         }
 
 
