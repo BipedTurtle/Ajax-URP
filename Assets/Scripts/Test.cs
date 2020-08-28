@@ -1,18 +1,23 @@
-﻿
-using Entities.NPC_System;
-using QuestSystem;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
+using Utility;
 
 namespace Scripts
 {
     public class Test : MonoBehaviour
     {
-        public AssetReference questReference;
+        public UnityEvent executeAfter;
+        public AssetReference timer;
         private void Start()
         {
-            QuestLibrary.BeginQuest(questReference);
+            var timerOpHandle = this.timer.LoadAssetAsync<LevelTimer>();
+            timerOpHandle.Completed += (op) =>
+            {
+                var timer = op.Result;
+
+                timer.StartTimer();
+            };
         }
     }
 }
