@@ -38,8 +38,8 @@ namespace PlayerSystem
             if (Input.GetKeyDown(KeyCode.F))
                 this.backShot.DisplayIndicator();
             if (Input.GetKeyUp(KeyCode.F)) {
-                this.backShot.Execute();
                 this.backShot.DisableIndicator();
+                this.backShot.Execute();
             }
         }
 
