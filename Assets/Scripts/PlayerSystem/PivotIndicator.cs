@@ -1,7 +1,5 @@
-﻿
-using Managers;
+﻿using Managers;
 using UnityEngine;
-using Utility;
 
 namespace PlayerSystem
 {

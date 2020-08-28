@@ -18,7 +18,7 @@ namespace GameUI
 
         public void TurnOn()
         {
-            this.canvas.enabled = true;
+            this.indicatorShouldBeOff = false;  
             this.On = true;
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.FollowCursor);
             Cursor.visible = false;
@@ -28,6 +28,7 @@ namespace GameUI
         public void TurnOff()
         {
             this.canvas.enabled = false;
+            this.indicatorShouldBeOff = true;
             this.On = false;
             UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.FollowCursor);
             Cursor.visible = true;
@@ -35,6 +36,7 @@ namespace GameUI
 
 
         private Vector2 indicatorPos;
+        private bool indicatorShouldBeOff;
         private void FollowCursor()
         {
             // no camera parameter is needed when using ScreenSpace - Overlay
@@ -43,8 +45,11 @@ namespace GameUI
                 Input.mousePosition,
                 null,
                 out indicatorPos);
-
             this.indicator.rectTransform.anchoredPosition = this.indicatorPos;
+
+            if (this.indicatorShouldBeOff | this.canvas.enabled)
+                return;
+            this.canvas.enabled = true;
         }
     }
 }

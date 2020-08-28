@@ -11,8 +11,6 @@ namespace Scripts
         public AssetReference timer;
         private void Start()
         {
-            GetComponentInChildren<MeshRenderer>().enabled = false;
-
             var timerOpHandle = this.timer.LoadAssetAsync<LevelTimer>();
             timerOpHandle.Completed += (op) =>
             {
