@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using Utility;
@@ -7,7 +8,7 @@ namespace Scripts
 {
     public class Test : MonoBehaviour
     {
-        public UnityEvent executeAfter;
+        public UnityEvent anEvent;
         public AssetReference timer;
         private void Start()
         {
@@ -18,6 +19,9 @@ namespace Scripts
 
                 timer.StartTimer();
             };
+
+
         }
+
     }
 }

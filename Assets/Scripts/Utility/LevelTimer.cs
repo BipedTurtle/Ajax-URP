@@ -30,13 +30,13 @@ namespace Utility
 
         public void PauseTimer()
         {
-            this.timer.Stop();
+            this.timer?.Stop();
         }
 
 
         public void ResumeTimer()
         {
-            this.timer.Start();
+            this.timer?.Start();
         }
 
 
