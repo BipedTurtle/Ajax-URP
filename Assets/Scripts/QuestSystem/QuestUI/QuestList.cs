@@ -8,6 +8,8 @@ namespace QuestSystem
 {
     public class QuestList : MonoBehaviour
     {
+        public static int Focus { get; set; } = -1;
+
         private List<Quest> questList = new List<Quest>();
         public async void Init()
         {
@@ -48,6 +50,10 @@ namespace QuestSystem
         /// </summary>
         public async void DisplayDescription(Quest quest)
         {
+            int questID = quest.GetInstanceID();
+            if (QuestList.Focus == questID)
+                return;
+
             var info = await quest.GetInfo();
 
             this.questHeader.text = info.questName;
@@ -62,6 +68,8 @@ namespace QuestSystem
                 var questObjectUI = questObjectUI_GO.GetComponent<QuestObjectUI>();
                 questObjectUI.Display(questObject);
             }
+
+            QuestList.Focus = quest.GetInstanceID();
         }
 
 
@@ -70,6 +78,7 @@ namespace QuestSystem
             this.questHeader.text = "";
             this.questDescription.text = "";
             this.progressHeader.gameObject.SetActive(false);
+            QuestList.Focus = -1;
         }
     }
 }

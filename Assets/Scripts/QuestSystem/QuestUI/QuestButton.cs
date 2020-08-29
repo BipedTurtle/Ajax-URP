@@ -8,10 +8,8 @@ namespace QuestSystem
 {
     public class QuestButton : MonoBehaviour
     {
-
         private Quest relevantQuest;
         [SerializeField] private TextMeshProUGUI tmp;
-
 
         public async void Init(Quest quest)
         {
