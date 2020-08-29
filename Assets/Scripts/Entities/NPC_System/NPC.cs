@@ -13,6 +13,8 @@ namespace Entities.NPC_System
         private Dialogue dialogue;
         [SerializeField] private AssetReferenceGameObject _selfReference;
         public AssetReferenceGameObject SelfReference => _selfReference;
+        [SerializeField] private string _npcName = "TestNPC";
+        public string NPC_Name => _npcName;
         private void Awake()
         {
             NPCsInTheScene.Add(this);

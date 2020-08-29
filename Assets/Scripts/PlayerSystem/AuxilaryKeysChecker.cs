@@ -17,11 +17,13 @@ namespace Assets.Scripts.PlayerSystem
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.CheckKeys);
         }
 
+
         private void CheckKeys()
         {
             this.CheckNPCInteraction();
             this.OpenQuestList();
         }
+
 
         private void CheckNPCInteraction()
         {
@@ -48,6 +50,7 @@ namespace Assets.Scripts.PlayerSystem
                 opHandle.Completed += (op) =>
                 {
                     this.questList = op.Result.GetComponent<QuestList>();
+                    this.questList.Init();
                     Time.timeScale = 0;
 
                     var levelTimerOpHandle = Addressables.LoadAssetAsync<LevelTimer>("LevelTimer.asset");
@@ -62,11 +65,20 @@ namespace Assets.Scripts.PlayerSystem
 
             bool questListActive = this.questList.gameObject.activeSelf;
             this.questList.gameObject.SetActive(!questListActive);
+            if (!questListActive)
+                this.questList.Init();
 
             var timerOpHandle = Addressables.LoadAssetAsync<LevelTimer>("LevelTimer.asset");
             timerOpHandle.Completed += (op) => {
                 var timer = op.Result;
-                if (questListActive) timer.ResumeTimer(); else timer.PauseTimer();
+                if (questListActive) {
+                    timer.ResumeTimer();
+                    Time.timeScale = 1;
+                }
+                else {
+                    timer.PauseTimer();
+                    Time.timeScale = 0;
+                }
             };
         } 
 

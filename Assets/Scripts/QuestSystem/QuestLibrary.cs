@@ -6,11 +6,11 @@ namespace QuestSystem
 {
     public static class QuestLibrary
     {
-        private static List<Quest> quests = new List<Quest>();
+        public static List<Quest> Quests { get; } = new List<Quest>();
 
         public static void UpdateQuestProgress(QuestObject questObject)
         {
-            foreach (var quest in quests)
+            foreach (var quest in Quests)
                 quest.CheckForProgress(questObject);
         }
 
@@ -21,7 +21,7 @@ namespace QuestSystem
             questOperationHandle.Completed += (op) =>
             {
                 var quest = op.Result;
-                quests.Add(quest);
+                Quests.Add(quest);
 
                 // add quest info to quest list
                 // here...

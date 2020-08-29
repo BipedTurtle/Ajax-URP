@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Entities.NPC_System;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace QuestSystem
 {
@@ -44,5 +47,19 @@ namespace QuestSystem
         {
             Debug.Log("quest complete!");
         }
+
+
+        [SerializeField] private string questName;
+        [SerializeField] private AssetReference relevantNPC_Reference;
+        [SerializeField] private TextAsset questDescription;
+        public async Task<(string questName, string npcName, string questDescription)> GetInfo()
+        {
+            var opHandle = this.relevantNPC_Reference.LoadAssetAsync<GameObject>();
+            var npcGo = await opHandle.Task;
+
+            var npc = npcGo.GetComponent<NPC>();
+            return (this.questName, npc.NPC_Name, this.questDescription.text);
+        }
+        
     }
 }
