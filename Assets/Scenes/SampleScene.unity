@@ -1904,6 +1904,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 740da8f7a2008c14685e6b238219befe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  QuestListReference:
+    m_AssetGUID: fcf7315ca8f84fc45be98b83663d7142
+    m_SubObjectName: 
 --- !u!23 &4845325623702661894
 MeshRenderer:
   m_ObjectHideFlags: 0

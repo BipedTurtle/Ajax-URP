@@ -28,6 +28,18 @@ namespace Utility
         }
 
 
+        public void PauseTimer()
+        {
+            this.timer.Stop();
+        }
+
+
+        public void ResumeTimer()
+        {
+            this.timer.Start();
+        }
+
+
         private TimerUI timerUI;
         private TimeSpan timeLimit;
         private void UpdateTimerUI()
