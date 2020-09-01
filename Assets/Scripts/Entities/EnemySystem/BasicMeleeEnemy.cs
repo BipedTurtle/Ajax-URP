@@ -1,11 +1,6 @@
-﻿using Managers;
+﻿using Entities.Stats;
+using Managers;
 using PlayerSystem;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Utility;
 
@@ -13,12 +8,15 @@ namespace Entities.EnemySystem
 {
     public class BasicMeleeEnemy : Enemy
     {
-        private Transform player;
+        private Transform playerTransform;
+        [SerializeField] private SkillInfoArchetype basicAttackArchetype;
+        private SkillInfo basicAttackSkillInfo;
         protected override void Awake()
         {
             base.Awake();
 
-            this.player = PlayerController.Instance.transform;
+            this.playerTransform = PlayerController.Instance.transform;
+            this.basicAttackSkillInfo = this.basicAttackArchetype.Copy();
         }
 
 
@@ -26,7 +24,7 @@ namespace Entities.EnemySystem
         {
             base.OnEnable();
 
-            UpdateManager.Instance.SubscribeToGlobalUpdate(this.Attack);
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.ActAttack);
             this.UnFreeze();
         }
 
@@ -36,7 +34,7 @@ namespace Entities.EnemySystem
             if (Time.frameCount % 15 != 0)
                 return;
 
-            base.agent.SetDestination(this.player.localPosition);
+            base.agent.SetDestination(this.playerTransform.localPosition);
 
         }
 
@@ -46,7 +44,7 @@ namespace Entities.EnemySystem
             if (Time.frameCount % 15 != 0)
                 return;
 
-            var toPlayerVector = (player.localPosition - transform.localPosition).Set(y: 0);
+            var toPlayerVector = (playerTransform.localPosition - transform.localPosition).Set(y: 0);
             var lookRotation = Quaternion.LookRotation(toPlayerVector).eulerAngles;
 
             LeanTween.cancel(gameObject);
@@ -54,9 +52,9 @@ namespace Entities.EnemySystem
         }
 
 
-        private float SqrDistanceToPlayer => (this.player.transform.localPosition - transform.localPosition).Set(y: 0).sqrMagnitude;
+        private float SqrDistanceToPlayer => (this.playerTransform.transform.localPosition - transform.localPosition).Set(y: 0).sqrMagnitude;
         private float nextAttackTime;
-        protected virtual void Attack()
+        protected virtual void ActAttack()
         {
             if (Time.frameCount % 15 != 0)
                 return;
@@ -83,12 +81,29 @@ namespace Entities.EnemySystem
 
 
         /// <summary>
-        /// this method gets called by animation clips
+        /// below methods get called by animation clips
         /// </summary>
         private void UnFreeze()
         {
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.MoveTowardsTarget);
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.TurnTowardsTarget);
+        }
+
+
+        [SerializeField] private float attackRadius = .5f;
+        private void DealDamage()
+        {
+            float playerHeight = this.playerTransform.localPosition.y;
+            Vector3 center = transform.localPosition.Set(y:playerHeight) + transform.forward * base.enemyStats.Range;
+            bool playerHit = EnemyPhysicsCheck.CheckSpherePlayer(center, this.attackRadius);
+            Debug.Log($"is player Hit? {playerHit}");
+
+            var player = PlayerController.Instance;
+            if (playerHit)
+            {
+                player.PlayerStats.ProcessAttack(base.enemyStats, this.basicAttackSkillInfo);
+                Debug.Log($"remainign player health: {player.PlayerStats.CurrentHealth}");
+            }
         }
     }
 }

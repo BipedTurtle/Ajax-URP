@@ -19,9 +19,6 @@ namespace Scripts
 
                 timer.StartTimer();
             };
-
-
         }
-
     }
 }

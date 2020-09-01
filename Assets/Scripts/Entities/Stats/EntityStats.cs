@@ -7,25 +7,27 @@ namespace Entities.Stats
 {
     public class EntityStats
     {
-        [SerializeField] float _health;
-        public float Health
+        [SerializeField] float _maxHealth;
+        public float MaxHealth
         {
-            get => _health;
+            get => _maxHealth;
             private set
             {
-                _health = Mathf.Clamp(value, 0, value);
+                _maxHealth = Mathf.Clamp(value, 0, value);
             }
         }
+        public float CurrentHealth { get; set; }
 
-        [SerializeField] float _mana;
-        public float Mana
+        [SerializeField] float _maxMana;
+        public float MaxMana
         {
-            get => _mana;
+            get => _maxMana;
             set
             {
-                _mana = Mathf.Clamp(value, 0, value);
+                _maxMana = Mathf.Clamp(value, 0, value);
             }
         }
+        public float CurrentMana { get; set; }
 
         [SerializeField] private float _baseDamage;
         public float BaseDamage
@@ -101,8 +103,12 @@ namespace Entities.Stats
 
         public EntityStats(float health, float mana, float baseDamage, float extradmage, float criticalChance, float range, float movementSpeed, float armor, float attackSpeed)
         {
-            this.Health = health;
-            this.Mana = mana;
+            this.MaxHealth = health;
+            this.CurrentHealth = this.MaxHealth;
+
+            this.MaxMana = mana;
+            this.CurrentMana = this.MaxMana;
+
             this.BaseDamage = baseDamage;
             this.ExtraDamage = extradmage;
             this.CriticalChance = criticalChance;
@@ -114,22 +120,26 @@ namespace Entities.Stats
 
 
         private static Func<float, float> ArmorFormula = (armor) => (0.1f) * Mathf.Sqrt(armor);
-        public void ProcessAttack(EntityStats inflicter, SkillInfo skill, Vector3 hitPosition)
+        public float ProcessAttack(EntityStats inflicter, SkillInfo skill)
         {
             float dmgBlockedPercentage = ArmorFormula(this.Armor);
             float totalDamage = inflicter.BaseDamage * skill.BaseDamageModifier + inflicter.ExtraDamage * skill.ExtraDaamgeModifier;
             float damageTaken = totalDamage * (1f - dmgBlockedPercentage);
 
             float randomFloat = Random.Range(0, 1f);
-            //Debug.Log($"random: {randomFloat}, critical Chance: {info.CriticalChance}");
             float criticalThreshold = (skill.CriticalChance == 0) ? -1f : inflicter.CriticalChance + skill.CriticalChance;
             bool isCriticalDamage = randomFloat <= criticalThreshold;
             damageTaken *= (isCriticalDamage) ? 2f : 1f;
 
+            this.CurrentHealth -= damageTaken;
+            return damageTaken;
+        }
+
+
+        public void ProcessAttack(EntityStats inflicter, SkillInfo skill, Vector3 hitPosition)
+        {
+            float damageTaken = this.ProcessAttack(inflicter, skill);
             DamageUILoader.Instance.LoadDamageUI(damageTaken, hitPosition);
-            
-            this.Health -= damageTaken;
-            //Debug.Log($"DamageTaken: {damageTaken}\nHealth Remaining: {this.Health}");
         }
     }
 }

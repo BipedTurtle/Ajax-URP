@@ -40,7 +40,7 @@ namespace Entities.EnemySystem
         {
             this.enemyStats.ProcessAttack(inflicterStats, skillInfo, transform.localPosition);
 
-            bool isDead = this.enemyStats.Health <= 0;
+            bool isDead = this.enemyStats.CurrentHealth <= 0;
             if (isDead)
                 this.Die();
         }

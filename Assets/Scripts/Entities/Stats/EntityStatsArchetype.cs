@@ -6,23 +6,23 @@ namespace Entities.Stats
     [CreateAssetMenu(fileName = "EntityStatsArchetype", menuName = "Stats/EntityStatsArchetype")]
     public class EntityStatsArchetype : ScriptableObject
     {
-        [SerializeField] float _health;
-        public float Health
+        [SerializeField] float _maxHealth;
+        public float Maxhealth
         {
-            get => _health;
+            get => _maxHealth;
             private set
             {
-                _health = Mathf.Clamp(value, 0, value);
+                _maxHealth = Mathf.Clamp(value, 0, value);
             }
         }
 
-        [SerializeField] float _mana;
-        public float Mana
+        [SerializeField] float _maxMana;
+        public float MaxMana
         {
-            get => _mana;
+            get => _maxMana;
             set
             {
-                _mana = Mathf.Clamp(value, 0, value);
+                _maxMana = Mathf.Clamp(value, 0, value);
             }
         }
 
@@ -105,8 +105,8 @@ namespace Entities.Stats
 
         public EntityStats Copy()
             => new EntityStats(
-                health: this.Health,
-                mana: this.Mana,
+                health: this.Maxhealth,
+                mana: this.MaxMana,
                 baseDamage: this.BaseDamage,
                 extradmage: this.ExtraDamage,
                 criticalChance: this.CriticalChance,

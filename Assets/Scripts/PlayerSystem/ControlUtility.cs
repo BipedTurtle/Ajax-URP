@@ -19,7 +19,7 @@ namespace PlayerSystem
                 return _mainCamera;
             }
         }
-        private static float proximityTreshold = 5f;
+        private static float proximityTreshold = 8f;
         public static Transform GetClosestEnemyFromCursor() 
         {
             var cursorWorldPoint = MainCamera.ScreenToWorldPoint(Input.mousePosition).Set(y: .5f);
