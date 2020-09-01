@@ -11,7 +11,6 @@ namespace PlayerSystem.Skills
     {
         [SerializeField] private PlayerInfo playerInfo;
         private float nextAttack;
-        public float attackInterval = 2f;
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -49,7 +48,8 @@ namespace PlayerSystem.Skills
             
             if (attackCoolHasReturned & aligned) {
                 this.ShootArrow();
-                this.nextAttack = Time.time + attackInterval;
+                //this.nextAttack = Time.time + attackInterval;
+                this.nextAttack = Time.time + PlayerController.Instance.PlayerStats.AttackSpeed;
             }
         }
 

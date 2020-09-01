@@ -1303,6 +1303,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy Test (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3888867770075607376, guid: 27cb31e81b1a6da46ac48bd8b55af835, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 27cb31e81b1a6da46ac48bd8b55af835, type: 3}
 --- !u!1 &2118051245
@@ -1745,6 +1749,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1737747943936053601, guid: 27cb31e81b1a6da46ac48bd8b55af835, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 3888867770075607342, guid: 27cb31e81b1a6da46ac48bd8b55af835, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.0137038
@@ -1755,7 +1763,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3888867770075607342, guid: 27cb31e81b1a6da46ac48bd8b55af835, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.3
+      value: 2.75
       objectReference: {fileID: 0}
     - target: {fileID: 3888867770075607342, guid: 27cb31e81b1a6da46ac48bd8b55af835, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1906,6 +1914,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   QuestListReference:
     m_AssetGUID: fcf7315ca8f84fc45be98b83663d7142
+    m_SubObjectName: 
+  levelTimerReference:
+    m_AssetGUID: cde0f0d55c7f0364595e1bba8e01a663
     m_SubObjectName: 
 --- !u!23 &4845325623702661894
 MeshRenderer:

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Entities.Stats
 {
@@ -91,6 +92,17 @@ namespace Entities.Stats
         }
 
 
+        [SerializeField] private float _attackSpeed;
+        public float AttackSpeed
+        {
+            get => _attackSpeed;
+            set
+            {
+                _attackSpeed = Mathf.Clamp(value, .1f, 5f);
+            }
+        }
+
+
         public EntityStats Copy()
             => new EntityStats(
                 health: this.Health,
@@ -100,6 +112,7 @@ namespace Entities.Stats
                 criticalChance: this.CriticalChance,
                 range: this.Range,
                 movementSpeed: this.MovementSpeed,
-                armor: this.Armor);
+                armor: this.Armor,
+                attackSpeed: this.AttackSpeed);
     }
 }

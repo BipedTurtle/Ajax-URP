@@ -88,7 +88,18 @@ namespace Entities.Stats
         }
 
 
-        public EntityStats(float health, float mana, float baseDamage, float extradmage, float criticalChance, float range, float movementSpeed, float armor)
+        [SerializeField] private float _attackSpeed;
+        public float AttackSpeed
+        {
+            get => _attackSpeed;
+            set
+            {
+                _attackSpeed = Mathf.Clamp(value, .1f, 5f);
+            }
+        }
+
+
+        public EntityStats(float health, float mana, float baseDamage, float extradmage, float criticalChance, float range, float movementSpeed, float armor, float attackSpeed)
         {
             this.Health = health;
             this.Mana = mana;
@@ -98,6 +109,7 @@ namespace Entities.Stats
             this.Range = range;
             this.MovementSpeed = movementSpeed;
             this.Armor = armor;
+            this.AttackSpeed = attackSpeed;
         }
 
 

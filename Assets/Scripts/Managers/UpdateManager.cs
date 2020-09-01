@@ -23,8 +23,8 @@ namespace Managers
 
 
         private LinkedList<Action> currentGlobalUpdateSubscribers = new LinkedList<Action>();
-        private List<Action> globalUpdateToBeAdded = new List<Action>();
-        private List<Action> globalUpdateToBeRemoved = new List<Action>();
+        private List<Action> globalUpdateToBeAdded = new List<Action>(50);
+        private List<Action> globalUpdateToBeRemoved = new List<Action>(50);
         private void Update()
         {
             if (globalUpdateToBeAdded.Count > 0)
@@ -57,8 +57,8 @@ namespace Managers
 
 
         private LinkedList<Action> currentGlobalFixedUpdateSubscribers = new LinkedList<Action>();
-        private List<Action> globalFixedUpdateToBeAdded = new List<Action>();
-        private List<Action> globalFixedUPdateToBeRemoved = new List<Action>();
+        private List<Action> globalFixedUpdateToBeAdded = new List<Action>(50);
+        private List<Action> globalFixedUPdateToBeRemoved = new List<Action>(50);
         private void FixedUpdate()
         {
             if (globalFixedUpdateToBeAdded.Count > 0)

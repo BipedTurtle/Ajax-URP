@@ -40,6 +40,7 @@ namespace Assets.Scripts.PlayerSystem
 
         [SerializeField] private AssetReferenceGameObject QuestListReference;
         private QuestList questList;
+        [SerializeField] private AssetReference levelTimerReference;
         private void OpenQuestList()
         {
             if (!Input.GetKeyDown(KeyCode.L))
@@ -53,7 +54,7 @@ namespace Assets.Scripts.PlayerSystem
                     this.questList.Init();
                     Time.timeScale = 0;
 
-                    var levelTimerOpHandle = Addressables.LoadAssetAsync<LevelTimer>("LevelTimer.asset");
+                    var levelTimerOpHandle = Addressables.LoadAssetAsync<LevelTimer>(this.levelTimerReference);
                     levelTimerOpHandle.Completed += (levelTimerOp) => {
                         var levelTimer = levelTimerOp.Result;
                         levelTimer.PauseTimer();
@@ -68,7 +69,7 @@ namespace Assets.Scripts.PlayerSystem
             if (!questListActive)
                 this.questList.Init();
 
-            var timerOpHandle = Addressables.LoadAssetAsync<LevelTimer>("LevelTimer.asset");
+            var timerOpHandle = Addressables.LoadAssetAsync<LevelTimer>(this.levelTimerReference);
             timerOpHandle.Completed += (op) => {
                 var timer = op.Result;
                 if (questListActive) {
