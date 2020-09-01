@@ -62,6 +62,7 @@ namespace PlayerSystem
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.RightClick);
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.LeftClick);
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.UpdateOnTarget);
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.StopKey);
         }
 
 
@@ -71,6 +72,7 @@ namespace PlayerSystem
             UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.RightClick);
             UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.LeftClick);
             UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.UpdateOnTarget);
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.StopKey);
         }
 
 
@@ -160,6 +162,16 @@ namespace PlayerSystem
                 else
                     this.Target = ControlUtility.GetClosestEnemyFromCursor();
             }
+        }
+
+
+        private void StopKey()
+        {
+            if (!Input.GetKeyDown(KeyCode.S))
+                return;
+
+            this.Agent.ResetPath();
+            LeanTween.cancel(gameObject);
         }
 
 
