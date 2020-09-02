@@ -96,13 +96,11 @@ namespace Entities.EnemySystem
             float playerHeight = this.playerTransform.localPosition.y;
             Vector3 center = transform.localPosition.Set(y:playerHeight) + transform.forward * base.enemyStats.Range;
             bool playerHit = EnemyPhysicsCheck.CheckSpherePlayer(center, this.attackRadius);
-            Debug.Log($"is player Hit? {playerHit}");
 
             var player = Player.Instance;
-            if (playerHit)
-            {
+            if (playerHit) {
                 player.PlayerStats.ProcessAttack(base.enemyStats, this.basicAttackSkillInfo);
-                Debug.Log($"remainign player health: {player.PlayerStats.CurrentHealth}");
+                player.UpdateStatusProgress();
             }
         }
     }

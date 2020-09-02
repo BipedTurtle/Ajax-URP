@@ -1,9 +1,5 @@
 ﻿using Entities.Stats;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GameUI;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -46,8 +42,20 @@ namespace PlayerSystem
             {
                 var archetype = op.Result;
                 this.PlayerStats = archetype.Copy();
+                this.UpdateStatusProgress();
+
                 Addressables.Release(op);
             };
+        }
+
+
+        [SerializeField] private ProgressBar healthBar;
+        [SerializeField] private ProgressBar manaBar;
+        //[SerializeField] private ProgressBar expBar;
+        public void UpdateStatusProgress()
+        {
+            healthBar.UpdateProgress(this.PlayerStats.CurrentHealth, this.PlayerStats.MaxHealth);
+            manaBar.UpdateProgress(this.PlayerStats.CurrentMana, this.PlayerStats.MaxMana);
         }
     }
 }
