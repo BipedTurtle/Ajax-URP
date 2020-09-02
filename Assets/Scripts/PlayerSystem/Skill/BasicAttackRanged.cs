@@ -23,7 +23,7 @@ namespace PlayerSystem.Skills
         {
             var player = PlayerController.Instance;
 
-            float range = player.PlayerStats.Range;
+            float range = Player.Instance.PlayerStats.Range;
             bool targetInRange = (player.Target.localPosition - player.transform.localPosition).sqrMagnitude < Mathf.Pow(range, 2);
             if (targetInRange) {
                 player.Agent.ResetPath();
@@ -38,18 +38,18 @@ namespace PlayerSystem.Skills
 
         private void AttackIfPossible()
         {
-            var player = PlayerController.Instance;
+            var player = Player.Instance;
 
             bool attackCoolHasReturned = Time.time > this.nextAttack;
 
-            var toTargetVector = (player.Target.transform.localPosition - player.transform.localPosition).normalized;
+            var toTargetVector = (PlayerController.Instance.Target.transform.localPosition - player.transform.localPosition).normalized;
             var dotProduct = Vector3.Dot(player.transform.forward.Set(y: 0), toTargetVector.Set(y: 0));
             bool aligned = dotProduct > .999f;
             
             if (attackCoolHasReturned & aligned) {
                 this.ShootArrow();
                 //this.nextAttack = Time.time + attackInterval;
-                this.nextAttack = Time.time + PlayerController.Instance.PlayerStats.AttackSpeed;
+                this.nextAttack = Time.time + player.PlayerStats.AttackSpeed;
             }
         }
 
@@ -60,7 +60,7 @@ namespace PlayerSystem.Skills
             if (this.arrowPool == null)
                 this.arrowPool = Pool.GetPool(this.arrowReference).Result;
 
-            var player = PlayerController.Instance;
+            var player = Player.Instance;
             var arrow = this.arrowPool.GetPooledObjectAt(player.transform.localPosition, player.transform.localRotation).GetComponent<Arrow>();
             arrow.SetFlightDistance(player.PlayerStats.Range);
             arrow.SetAttackInfo(player.PlayerStats, this.skillInfo);

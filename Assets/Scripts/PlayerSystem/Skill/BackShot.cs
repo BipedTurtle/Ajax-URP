@@ -50,8 +50,8 @@ namespace PlayerSystem.Skills
         private Pool arrowPool;
         private async void InstantiateArrow()
         {
-            var player = PlayerController.Instance;
-            var playerPoolingData = PlayerController.Instance.weaponsAndEffectsPoolingData;
+            var player = Player.Instance;
+            var playerPoolingData = player.weaponsAndEffectsPoolingData;
 
             if (arrowPool == null)
                 arrowPool = await Pool.GetPool(this.arrowReference, playerPoolingData);

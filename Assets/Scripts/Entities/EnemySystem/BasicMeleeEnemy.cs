@@ -98,7 +98,7 @@ namespace Entities.EnemySystem
             bool playerHit = EnemyPhysicsCheck.CheckSpherePlayer(center, this.attackRadius);
             Debug.Log($"is player Hit? {playerHit}");
 
-            var player = PlayerController.Instance;
+            var player = Player.Instance;
             if (playerHit)
             {
                 player.PlayerStats.ProcessAttack(base.enemyStats, this.basicAttackSkillInfo);

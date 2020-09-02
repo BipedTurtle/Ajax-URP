@@ -1,11 +1,9 @@
 ﻿using Assets.Scripts.PlayerSystem;
 using Entities;
-using Entities.Stats;
 using GameUI;
 using Managers;
 using System;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
 using Utility;
 
@@ -14,14 +12,6 @@ namespace PlayerSystem
     [RequireComponent(typeof(AuxilaryKeysChecker))]
     public class PlayerController : MonoBehaviour
     {
-        public PlayerInfo playerInfo;
-        [SerializeField] private SkillsLibrary skillsLibrary;
-        public PoolingData weaponsAndEffectsPoolingData;
-        [SerializeField] private AssetReferenceGameObject _selfReference;
-        public AssetReferenceGameObject SelfReference => _selfReference;
-
-        [SerializeField] private AssetReference playerStatsArchetype;
-        public EntityStats PlayerStats { get; private set; }
         #region Singleton
         public static PlayerController Instance { get; private set; }
         private void Awake()
@@ -32,25 +22,18 @@ namespace PlayerSystem
                 return;
             }
             Instance = this;
-
-
-            var statsOpHandle = this.playerStatsArchetype.LoadAssetAsync<EntityStatsArchetype>();
-            statsOpHandle.Completed += (op) =>
-            {
-                var archetype = op.Result;
-                this.PlayerStats = archetype.Copy();
-                Addressables.Release(op);
-            };
         }
         #endregion
 
 
+        private SkillsLibrary skillsLibrary;
         private void Start()
         {
             this.raycastingCamera = Camera.main;
             this.Agent = GetComponent<NavMeshAgent>();
 
-            this.skillsKeyCheck = this.skillsLibrary.GetSkillsKeyCheck(this.playerInfo.playerClass);
+            this.skillsLibrary = Player.Instance.SkillsLibrary;
+            this.skillsKeyCheck = this.skillsLibrary.GetSkillsKeyCheck(Player.Instance.PlayerClass);
 
             this.EnableInputs();
         }

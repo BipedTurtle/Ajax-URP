@@ -37,7 +37,7 @@ namespace GameUI
             #region Get Talkers' transforms
             var talkersReferences = dialogue.TalkersReferences;
             var NPC_References = NPC.NPCsInTheScene.Select(npc => npc.SelfReference.RuntimeKey).ToList();
-            var player = PlayerController.Instance;
+            var player = Player.Instance;
             foreach (var talkerRef in talkersReferences) {
                 if (talkerRef.RuntimeKey.Equals(player.SelfReference.RuntimeKey)) {
                     this.talkerTransforms.Add(player.transform);
