@@ -4,6 +4,7 @@ using QuestSystem;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
+using GameUI;
 
 namespace Entities.EnemySystem
 {
@@ -38,11 +39,13 @@ namespace Entities.EnemySystem
 
         public virtual void OnHit(EntityStats inflicterStats, SkillInfo skillInfo)
         {
-            this.enemyStats.ProcessAttack(inflicterStats, skillInfo, transform.localPosition);
+            this.EnemyStats.ProcessAttack(inflicterStats, skillInfo, transform.localPosition);
 
-            bool isDead = this.enemyStats.CurrentHealth <= 0;
+            bool isDead = this.EnemyStats.CurrentHealth <= 0;
             if (isDead)
                 this.Die();
+
+            EnemyHealthbarLoader.Instance.LoadHealthBar(this);
         }
 
 
@@ -60,16 +63,16 @@ namespace Entities.EnemySystem
 
 
         [SerializeField] private AssetReference enemyStatsArchetype;
-        public EntityStats enemyStats;
+        public EntityStats EnemyStats { get; private set; }
         private void LoadStats()
         {
             var statsOpHandle = this.enemyStatsArchetype.LoadAssetAsync<EntityStatsArchetype>();
             statsOpHandle.Completed += (op) =>
             {
                 var archetype = op.Result;
-                this.enemyStats = archetype.Copy();
+                this.EnemyStats = archetype.Copy();
 
-                this.agent.stoppingDistance = this.enemyStats.Range;
+                this.agent.stoppingDistance = this.EnemyStats.Range;
             };
         }
     }

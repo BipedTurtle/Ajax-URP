@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Utility;
 
 namespace GameUI
 {
@@ -35,9 +36,10 @@ namespace GameUI
         {
             DamageUI ui = this.GetInacitveUI();
 
-            Vector2 screenPoint = this.mainCamera.WorldToScreenPoint(at);
-            RectTransform canvasSpace = transform as RectTransform;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasSpace, screenPoint, null, out Vector2 anchoredPosition);
+            var anchoredPosition = TrackingCamera.GetAnchorPos(at, transform as RectTransform);
+            //Vector2 screenPoint = this.mainCamera.WorldToScreenPoint(at);
+            //RectTransform canvasSpace = transform as RectTransform;
+            //RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasSpace, screenPoint, null, out Vector2 anchoredPosition);
 
             Vector2 displayPos = anchoredPosition + Vector2.left * this.offset;
             ui.DisplayDamage(spawnPos: displayPos, damage: damage);

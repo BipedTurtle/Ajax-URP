@@ -59,7 +59,7 @@ namespace Entities.EnemySystem
             if (Time.frameCount % 15 != 0)
                 return;
 
-            float range = (base.enemyStats == null) ? 1f : base.enemyStats.Range;
+            float range = (base.EnemyStats == null) ? 1f : base.EnemyStats.Range;
             bool isOutOfRange = this.SqrDistanceToPlayer > Mathf.Pow(range, 2);
             bool coolHasNotReturned = Time.timeSinceLevelLoad < this.nextAttackTime;
             if (isOutOfRange | coolHasNotReturned)
@@ -69,7 +69,7 @@ namespace Entities.EnemySystem
             base.animator.SetTrigger("Attack");
             this.Freeze();
 
-            this.nextAttackTime = Time.timeSinceLevelLoad + base.enemyStats.AttackSpeed;
+            this.nextAttackTime = Time.timeSinceLevelLoad + base.EnemyStats.AttackSpeed;
         }
 
 
@@ -94,12 +94,12 @@ namespace Entities.EnemySystem
         private void DealDamage()
         {
             float playerHeight = this.playerTransform.localPosition.y;
-            Vector3 center = transform.localPosition.Set(y:playerHeight) + transform.forward * base.enemyStats.Range;
+            Vector3 center = transform.localPosition.Set(y:playerHeight) + transform.forward * base.EnemyStats.Range;
             bool playerHit = EnemyPhysicsCheck.CheckSpherePlayer(center, this.attackRadius);
 
             var player = Player.Instance;
             if (playerHit) {
-                player.PlayerStats.ProcessAttack(base.enemyStats, this.basicAttackSkillInfo);
+                player.PlayerStats.ProcessAttack(base.EnemyStats, this.basicAttackSkillInfo);
                 player.UpdateStatusProgress();
             }
         }
