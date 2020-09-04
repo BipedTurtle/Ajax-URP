@@ -12,9 +12,16 @@ namespace Assets.Scripts.PlayerSystem
     [RequireComponent(typeof(PlayerController))]
     public class AuxilaryKeysChecker : MonoBehaviour
     {
+        private LevelTimer timer;
         private void Awake()
         {
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.CheckKeys);
+            var timerOpHandle = Addressables.LoadAssetAsync<LevelTimer>(this.levelTimerReference);
+            timerOpHandle.Completed += (op) =>
+            {
+                this.timer = op.Result;
+                Addressables.Release(op);
+            };
         }
 
 
@@ -69,18 +76,13 @@ namespace Assets.Scripts.PlayerSystem
             if (!questListActive)
                 this.questList.Init();
 
-            var timerOpHandle = Addressables.LoadAssetAsync<LevelTimer>(this.levelTimerReference);
-            timerOpHandle.Completed += (op) => {
-                var timer = op.Result;
-                if (questListActive) {
-                    timer.ResumeTimer();
-                    Time.timeScale = 1;
-                }
-                else {
-                    timer.PauseTimer();
-                    Time.timeScale = 0;
-                }
-            };
+
+            if (questListActive) {
+                this.timer.ResumeTimer();
+                Time.timeScale = 1; }
+            else {
+                this.timer.PauseTimer();
+                Time.timeScale = 0; }
         } 
 
     }
