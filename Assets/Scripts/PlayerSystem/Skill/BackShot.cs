@@ -1,4 +1,5 @@
 ﻿using Entities.Weapons;
+using GameUI;
 using Managers;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -24,7 +25,7 @@ namespace PlayerSystem.Skills
             this.InstantiateArrow();
             UpdateManager.Instance.SubscribeToGlobalFixedUpdate(this.SlideBackwards);
 
-            base.nextActivation = Time.time + base.coolDown;
+            base.nextActivation = Time.time + base._coolDown;
         }
 
 

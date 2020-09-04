@@ -6,7 +6,8 @@ namespace PlayerSystem.Skills
     public abstract class Skill : ScriptableObject
     {
         protected float nextActivation;
-        [Tooltip("This is Unnecessary for basic attack skills")] [SerializeField] protected float coolDown;
+        [Tooltip("This is Unnecessary for basic attack skills")] [SerializeField] protected float _coolDown;
+        public float CoolDown => this._coolDown;
         public bool canActivate => Time.time > this.nextActivation;
 
         public AssetReferenceGameObject SkillIndicator;
