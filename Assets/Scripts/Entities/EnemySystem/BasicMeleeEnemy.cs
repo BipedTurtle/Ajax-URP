@@ -39,16 +39,27 @@ namespace Entities.EnemySystem
         }
 
 
+        private int rotationTweenID = -1;
         protected virtual void TurnTowardsTarget()
         {
-            if (Time.frameCount % 15 != 0)
-                return;
+            //if (Time.frameCount % 15 != 0)
+            //    return;
 
             var toPlayerVector = (playerTransform.localPosition - transform.localPosition).Set(y: 0);
-            var lookRotation = Quaternion.LookRotation(toPlayerVector).eulerAngles;
+            var lookRotation = Quaternion.LookRotation(toPlayerVector);
 
-            LeanTween.cancel(gameObject);
-            LeanTween.rotate(gameObject, lookRotation, .15f);
+            float angleBetween = Vector3.Angle(toPlayerVector, transform.forward);
+            if (angleBetween < 10f) {
+                LeanTween.cancel(gameObject);
+                transform.rotation = lookRotation;
+                return;
+            }
+
+            bool isAlreadyRotating = this.rotationTweenID == -1 ? false : LeanTween.isTweening(this.rotationTweenID);
+            if (isAlreadyRotating)
+                return;
+            else
+                this.rotationTweenID = LeanTween.rotate(gameObject, lookRotation.eulerAngles, .15f).uniqueId;
         }
 
 
