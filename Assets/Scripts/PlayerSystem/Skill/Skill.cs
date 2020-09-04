@@ -5,10 +5,13 @@ namespace PlayerSystem.Skills
 {
     public abstract class Skill : ScriptableObject
     {
+        protected float nextActivation;
+        [Tooltip("This is Unnecessary for basic attack skills")] [SerializeField] protected float coolDown;
+        public bool canActivate => Time.time > this.nextActivation;
+
         public AssetReferenceGameObject SkillIndicator;
         public IndicatorSpawnType indicatorSpawnPos;
         private GameObject indicatorGO;
-
         public void DisplayIndicator()
         {
             if (!SkillIndicator.RuntimeKeyIsValid())
@@ -38,5 +41,8 @@ namespace PlayerSystem.Skills
 
             this.indicatorGO.SetActive(false);
         }
+
+
+        public abstract void Execute();
     }
 }

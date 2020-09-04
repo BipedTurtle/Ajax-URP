@@ -14,11 +14,17 @@ namespace PlayerSystem.Skills
             base.OnEnable();
         }
 
-        public void Execute()
+
+        public override void Execute()
         {
+            if (!base.canActivate)
+                return;
+
             this.TurnTowardsCursorPosition();
             this.InstantiateArrow();
             UpdateManager.Instance.SubscribeToGlobalFixedUpdate(this.SlideBackwards);
+
+            base.nextActivation = Time.time + base.coolDown;
         }
 
 

@@ -33,7 +33,7 @@ namespace PlayerSystem
             this.Agent = GetComponent<NavMeshAgent>();
 
             this.skillsLibrary = Player.Instance.SkillsLibrary;
-            this.skillsKeyCheck = this.skillsLibrary.GetSkillsKeyCheck(Player.Instance.PlayerClass);
+            this.skillsKeyCheck = SkillTab.Instance.CheckSkills;
 
             this.EnableInputs();
         }

@@ -10,16 +10,15 @@ namespace PlayerSystem.Skills
     public class BasicAttackRanged : DamagingSkill
     {
         [SerializeField] private PlayerInfo playerInfo;
-        private float nextAttack;
         protected override void OnEnable()
         {
             base.OnEnable();
-            this.nextAttack = 0;
+            this.nextActivation = 0;
         }
 
 
         private Pool arrowPool;
-        public void Execute()
+        public override void Execute()
         {
             var player = PlayerController.Instance;
 
@@ -40,7 +39,7 @@ namespace PlayerSystem.Skills
         {
             var player = Player.Instance;
 
-            bool attackCoolHasReturned = Time.time > this.nextAttack;
+            bool attackCoolHasReturned = Time.time > this.nextActivation;
 
             var toTargetVector = (PlayerController.Instance.Target.transform.localPosition - player.transform.localPosition).normalized;
             var dotProduct = Vector3.Dot(player.transform.forward.Set(y: 0), toTargetVector.Set(y: 0));
@@ -48,8 +47,7 @@ namespace PlayerSystem.Skills
             
             if (attackCoolHasReturned & aligned) {
                 this.ShootArrow();
-                //this.nextAttack = Time.time + attackInterval;
-                this.nextAttack = Time.time + player.PlayerStats.AttackSpeed;
+                this.nextActivation = Time.time + player.PlayerStats.AttackSpeed;
             }
         }
 
