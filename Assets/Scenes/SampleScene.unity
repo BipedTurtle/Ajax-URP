@@ -487,10 +487,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2028856690298602473, guid: 2f9a0f9fc17afb245b1287d7a9b9e7c7, type: 3}
-      propertyPath: m_AdditionalShaderChannelsFlag
-      value: 25
-      objectReference: {fileID: 0}
     - target: {fileID: 2028856690298602474, guid: 2f9a0f9fc17afb245b1287d7a9b9e7c7, type: 3}
       propertyPath: m_Name
       value: Attack Indicator Canvas

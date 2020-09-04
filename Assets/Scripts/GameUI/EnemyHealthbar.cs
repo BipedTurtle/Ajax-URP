@@ -1,5 +1,6 @@
 ﻿using Entities.EnemySystem;
 using Managers;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Utility;
@@ -10,10 +11,14 @@ namespace GameUI
     {
         [SerializeField] private Image fillImage;
         [SerializeField] private Image background;
-
+        private Action SetExpiration_Cache;
+        private Action UpdateStatus_Cache;
         private void Start()
         {
             this.Canvas = GetComponent<Canvas>();
+
+            this.SetExpiration_Cache = this.SetExpiration;
+            this.UpdateStatus_Cache = this.UpdateStatus;
         }
 
 
@@ -22,10 +27,10 @@ namespace GameUI
         {
             this.enemyTracked = enemy;
 
-            UpdateManager.Instance.SubscribeToGlobalUpdate(this.UpdateStatus);
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.UpdateStatus_Cache);
 
             this.expirationTime = Time.timeSinceLevelLoad + this.expireAfter;
-            UpdateManager.Instance.SubscribeToGlobalUpdate(this.SetExpiration);
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.SetExpiration_Cache);
         }
 
 
@@ -75,8 +80,8 @@ namespace GameUI
 
         private void Cease()
         {
-            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.UpdateStatus);
-            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.SetExpiration);
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.UpdateStatus_Cache);
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.SetExpiration_Cache);
         }
 
     }
