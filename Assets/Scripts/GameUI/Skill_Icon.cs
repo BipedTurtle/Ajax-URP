@@ -1,5 +1,6 @@
 ﻿using Managers;
 using PlayerSystem.Skills;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,8 +8,14 @@ namespace GameUI
 {
     public class Skill_Icon : MonoBehaviour
     {
-        [SerializeField] private Image mask;
+        private Action CountDownLogic_Cache;
+        private void Start()
+        {
+            this.CountDownLogic_Cache = this.CountDownLogic;
+        }
 
+
+        [SerializeField] private Image mask;
         private float skillCoolDown;
         public void Init(Skill skill)
         {
@@ -26,7 +33,7 @@ namespace GameUI
                 return;
 
             this.mask.fillAmount = 1f;
-            UpdateManager.Instance.SubscribeToGlobalUpdate(this.CountDownLogic);
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.CountDownLogic_Cache);
             this.countDowning = true;
         }
 
@@ -43,7 +50,7 @@ namespace GameUI
                 this.mask.fillAmount = fill;
             }
             else {
-                UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.CountDownLogic);
+                UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.CountDownLogic_Cache);
                 this.currentCool = 0;
                 this.countDowning = false;
             }

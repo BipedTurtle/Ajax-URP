@@ -73,15 +73,14 @@ namespace PlayerSystem
 
 
         private readonly float rotationTime = .15f;
-        private LTDescr leanTweenRotation;
+        private MyTweenState myTweenState;
         private void TurnTowardsTarget()
         {
-            if (this.leanTweenRotation != null)
+            if (this.myTweenState != null)
                 return;
 
             var toTargetVector = (this.Target.localPosition - transform.localPosition).Set(y: 0);
-            var targetRotation = Quaternion.LookRotation(toTargetVector);
-            this.leanTweenRotation = LeanTween.rotate(gameObject, targetRotation.eulerAngles, this.rotationTime).setOnComplete(() => this.leanTweenRotation = null);
+            this.myTweenState = MyTween.Instance.Rotate(transform, toTargetVector, .25f);
         }
 
 
@@ -161,11 +160,8 @@ namespace PlayerSystem
         public void CancelActions()
         {
             this.Target = null;
-            if (this.leanTweenRotation != null) {
-                var leanTweenID = this.leanTweenRotation.uniqueId;
-                LeanTween.cancel(leanTweenID);
-            }
-            this.leanTweenRotation = null;
+            MyTween.Instance.Cancel(this.myTweenState);
+            this.myTweenState = null;
         }
 
 
