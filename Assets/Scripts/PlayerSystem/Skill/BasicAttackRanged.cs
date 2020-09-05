@@ -43,8 +43,8 @@ namespace PlayerSystem.Skills
 
             var toTargetVector = (PlayerController.Instance.Target.transform.localPosition - player.transform.localPosition).normalized;
             var dotProduct = Vector3.Dot(player.transform.forward.Set(y: 0), toTargetVector.Set(y: 0));
-            bool aligned = dotProduct > .999f;
-            
+            bool aligned = dotProduct > .99f;
+
             if (attackCoolHasReturned & aligned) {
                 this.ShootArrow();
                 this.nextActivation = Time.time + player.PlayerStats.AttackSpeed;

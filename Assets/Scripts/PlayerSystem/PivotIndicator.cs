@@ -1,39 +1,37 @@
-﻿using Managers;
+﻿using GameUI;
+using Managers;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace PlayerSystem
 {
-    public class PivotIndicator : MonoBehaviour
+    public class PivotIndicator : Indicator
     {
         private GameObject image;
+        private Renderer renderer;
+        [SerializeField] private Material transparentMat;
+        [SerializeField] private Material indicatorMat;
         private void Awake()
         {
-            this.mainCamera = Camera.main;
-            this.zDepth = this.mainCamera.transform.localPosition.y;
-
             this.image = transform.GetChild(0).gameObject;
+            this.renderer = this.image.GetComponent<Renderer>();
         }
-
-
-        private void OnEnable()
+        public override void TurnOn()
         {
             UpdateManager.Instance.SubscribeToGlobalUpdate(PivotAround);
 
             this.dontTurnIndicatorOn = false;
         }
 
-
-        private void OnDisable()
+        public override void TurnOff()
         {
             UpdateManager.Instance.UnSubscribeFromGlobalUpdate(PivotAround);
 
             this.dontTurnIndicatorOn = true;
-            this.image.SetActive(false);
+            this.renderer.sharedMaterial = this.transparentMat;
         }
 
 
-        private Camera mainCamera;
-        private float zDepth;
         private bool dontTurnIndicatorOn;
         public void PivotAround()
         {
@@ -44,10 +42,11 @@ namespace PlayerSystem
 
             transform.SetPositionAndRotation(center, lookRotation);
 
-            if (this.dontTurnIndicatorOn | this.image.activeSelf)
+            if (this.dontTurnIndicatorOn | this.renderer.sharedMaterial.Equals(this.indicatorMat))
                 return;
 
-            this.image.SetActive(true);
+            //this.image.SetActive(true);
+            this.renderer.sharedMaterial = this.indicatorMat;
         }
     }
 }

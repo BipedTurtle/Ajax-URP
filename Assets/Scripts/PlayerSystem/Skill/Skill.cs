@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using GameUI;
+using Managers;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace PlayerSystem.Skills
@@ -10,37 +12,37 @@ namespace PlayerSystem.Skills
         public float CoolDown => this._coolDown;
         public bool canActivate => Time.time > this.nextActivation;
 
-        public AssetReferenceGameObject SkillIndicator;
+        public AssetReference SkillIndicatorReference;
         public IndicatorSpawnType indicatorSpawnPos;
-        private GameObject indicatorGO;
+        private Indicator indicator;
         public void DisplayIndicator()
         {
-            if (!SkillIndicator.RuntimeKeyIsValid())
+            if (SkillIndicatorReference.RuntimeKey.Equals(ReferenceCenter.Instance.emptyReference.RuntimeKey))
                 return;
 
             var spawnPos = IndicatorUtility.GetSpawnPos(this.indicatorSpawnPos);
-            if (indicatorGO == null)
+            if (this.indicator == null)
             {
-                var operation = this.SkillIndicator.InstantiateAsync();
+                var operation = this.SkillIndicatorReference.InstantiateAsync();
                 operation.Completed += (op) => {
-                    this.indicatorGO = op.Result;
-                    this.indicatorGO.transform.localPosition = spawnPos;
-                    this.indicatorGO.SetActive(true);
+                    this.indicator = op.Result.GetComponent<Indicator>();
+                    this.indicator.transform.localPosition = spawnPos;
+                    this.indicator.TurnOn();
                 };
             }
             else {
-                this.indicatorGO.transform.localPosition = spawnPos;
-                this.indicatorGO.SetActive(true);
+                this.indicator.transform.localPosition = spawnPos;
+                this.indicator.TurnOn();
             }
         }
 
 
         public void DisableIndicator()
         {
-            if (indicatorGO == null)
+            if (this.indicator == null)
                 return;
 
-            this.indicatorGO.SetActive(false);
+            this.indicator.TurnOff();
         }
 
 

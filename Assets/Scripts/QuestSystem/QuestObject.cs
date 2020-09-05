@@ -51,7 +51,7 @@ namespace QuestSystem
 
         public void Clear()
         {
-            if (EmptyReference.Instance == null)
+            if (EmptyReference.Instance == null | ReferenceCenter.Instance == null)
                 return;
 
             var emptyReference = ReferenceCenter.Instance.emptyReference;

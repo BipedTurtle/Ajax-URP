@@ -23,12 +23,5 @@ namespace Scripts
 
 
         }
-
-        private void Update()
-        {
-            var randInt = UnityEngine.Random.Range(0, 60 * 35);
-            this.tmp.text = NumberToStringUtility.GetTimeBySecond(randInt);
-            
-        }
     }
 }
