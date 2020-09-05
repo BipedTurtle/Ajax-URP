@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using Utility;
+using TMPro;
 
 namespace Scripts
 {
@@ -11,6 +12,7 @@ namespace Scripts
     {
         public UnityEvent anEvent;
         public AssetReference timer;
+        public TextMeshProUGUI tmp;
         private void Start()
         {
             var timerOpHandle = this.timer.LoadAssetAsync<LevelTimer>();
@@ -20,6 +22,15 @@ namespace Scripts
 
                 timer.StartTimer();
             };
+
+
+        }
+
+        private void Update()
+        {
+            var randInt = UnityEngine.Random.Range(0, 60 * 35);
+            this.tmp.text = NumberToStringUtility.GetTimeBySecond(randInt);
+            
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Entities.Weapons;
 using GameUI;
 using Managers;
+using System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utility;
@@ -10,9 +11,12 @@ namespace PlayerSystem.Skills
     [CreateAssetMenu(fileName = "BackShot", menuName = "PlayerSystem/Skills/BackShot")]
     public class BackShot : DamagingSkill
     {
+        private Action SlideBackwards_Cache;
         protected override void OnEnable()
         {
             base.OnEnable();
+
+            this.SlideBackwards_Cache = this.SlideBackwards;
         }
 
 
@@ -23,7 +27,7 @@ namespace PlayerSystem.Skills
 
             this.TurnTowardsCursorPosition();
             this.InstantiateArrow();
-            UpdateManager.Instance.SubscribeToGlobalFixedUpdate(this.SlideBackwards);
+            UpdateManager.Instance.SubscribeToGlobalFixedUpdate(this.SlideBackwards_Cache);
 
             base.nextActivation = Time.time + base._coolDown;
         }
@@ -46,7 +50,7 @@ namespace PlayerSystem.Skills
                 player.transform.localPosition += this.movementDirection * movementThisFrame;
             }
             else {
-                UpdateManager.Instance.UnsubscribeFromGlobalFixedUpdate(this.SlideBackwards);
+                UpdateManager.Instance.UnsubscribeFromGlobalFixedUpdate(this.SlideBackwards_Cache);
                 this.distanceMoved = 0;
                 player.Agent.updateRotation = true;
             }

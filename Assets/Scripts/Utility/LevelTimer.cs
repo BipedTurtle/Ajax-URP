@@ -48,12 +48,11 @@ namespace Utility
                 return;
 
             var remainingTime = this.timeLimit.Subtract(this.timer.Elapsed);
-            var min = remainingTime.Minutes;
-            var sec = remainingTime.Seconds;
+            var totalSeconds = (int)remainingTime.TotalSeconds;
 
-            this.timerUI.UpdateUI(min, sec);
+            this.timerUI.UpdateUI(totalSeconds);
 
-            bool timeOver = (min == 0) & (sec == 0);
+            bool timeOver = totalSeconds == 0;
             if (timeOver)
                 UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.UpdateTimerUI);
         }

@@ -6,15 +6,6 @@ namespace GameUI
 {
     public class DamageUI : MonoBehaviour
     {
-        //private Color normalHitColor;
-        //private Color CriticalHitColor;
-        //private void Awake()
-        //{
-        //    normalHitColor = new Color(255, 255, 179, 255);
-        //    CriticalHitColor = new Color(255, 179, 179, 255);
-        //}
-
-
         [SerializeField] private TextMeshProUGUI tmp;
         private StringBuilder sb;
 
