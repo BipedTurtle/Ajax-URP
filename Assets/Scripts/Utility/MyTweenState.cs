@@ -8,6 +8,6 @@ namespace Utility
 {
     public abstract class MyTweenState
     {
-        bool IsTweening { get; }
+        public bool IsTweening { get; protected set; }
     }
 }

@@ -17,17 +17,21 @@ namespace Utility
             Instance = this;
         }
 
-        private Queue<MyTweenRotationState> rotationStatesReady = new Queue<MyTweenRotationState>(20);
-        private List<MyTweenRotationState> tweeningRotationStates = new List<MyTweenRotationState>();
+        private static int rotationStatesCount = 50;
+        private Queue<MyTweenRotationState> rotationStatesReady = new Queue<MyTweenRotationState>(rotationStatesCount);
+        private List<MyTweenRotationState> tweeningRotationStates = new List<MyTweenRotationState>(rotationStatesCount);
         private void Start()
         {
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < rotationStatesCount; i++)
                 this.rotationStatesReady.Enqueue(new MyTweenRotationState());
         }
 
 
         public MyTweenState Rotate(Transform tweeningTransform, Vector3 targetDirection, float time)
         {
+            if (this.rotationStatesReady.Count == 0)
+                this.rotationStatesReady.Enqueue(new MyTweenRotationState());
+
             var rotationState = this.rotationStatesReady.Dequeue();
             rotationState.Init(tweeningTransform, targetDirection, time);
             this.tweeningRotationStates.Add(rotationState);

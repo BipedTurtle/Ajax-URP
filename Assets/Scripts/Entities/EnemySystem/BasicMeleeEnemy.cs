@@ -1,4 +1,5 @@
-﻿using Entities.Stats;
+﻿using System;
+using Entities.Stats;
 using Managers;
 using PlayerSystem;
 using UnityEngine;
@@ -11,12 +12,21 @@ namespace Entities.EnemySystem
         private Transform playerTransform;
         [SerializeField] private SkillInfoArchetype basicAttackArchetype;
         private SkillInfo basicAttackSkillInfo;
+        #region Delegate Caches
+        private Action ActAttack_Cache;
+        private Action MoveTowardsTarget_Cahce;
+        private Action TurnTowardsTarget_Cache;
+        #endregion
         protected override void Awake()
         {
             base.Awake();
 
             this.playerTransform = PlayerController.Instance.transform;
             this.basicAttackSkillInfo = this.basicAttackArchetype.Copy();
+
+            this.ActAttack_Cache = this.ActAttack;
+            this.MoveTowardsTarget_Cahce = this.MoveTowardsTarget;
+            this.TurnTowardsTarget_Cache = this.TurnTowardsTarget;
         }
 
 
@@ -24,42 +34,39 @@ namespace Entities.EnemySystem
         {
             base.OnEnable();
 
-            UpdateManager.Instance.SubscribeToGlobalUpdate(this.ActAttack);
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.ActAttack_Cache);
             this.UnFreeze();
         }
 
 
         protected virtual void MoveTowardsTarget()
         {
-            if (Time.frameCount % 15 != 0)
+            if (Time.frameCount % 10 != 0)
                 return;
 
             base.agent.SetDestination(this.playerTransform.localPosition);
-
         }
 
 
-        private int rotationTweenID = -1;
+        private MyTweenState rotationTweeningState;
         protected virtual void TurnTowardsTarget()
         {
-            //if (Time.frameCount % 15 != 0)
-            //    return;
+            if (this.rotationTweeningState != null && this.rotationTweeningState.IsTweening)
+                return;
 
             var toPlayerVector = (playerTransform.localPosition - transform.localPosition).Set(y: 0);
-            var lookRotation = Quaternion.LookRotation(toPlayerVector);
-
             float angleBetween = Vector3.Angle(toPlayerVector, transform.forward);
-            if (angleBetween < 10f) {
-                LeanTween.cancel(gameObject);
+            if (angleBetween < 15f) {
+                var lookRotation = Quaternion.LookRotation(toPlayerVector);
                 transform.rotation = lookRotation;
                 return;
             }
 
-            bool isAlreadyRotating = this.rotationTweenID == -1 ? false : LeanTween.isTweening(this.rotationTweenID);
+            bool isAlreadyRotating = (this.rotationTweeningState == null) ? false : this.rotationTweeningState.IsTweening;
             if (isAlreadyRotating)
                 return;
             else
-                this.rotationTweenID = LeanTween.rotate(gameObject, lookRotation.eulerAngles, .15f).uniqueId;
+                this.rotationTweeningState = MyTween.Instance.Rotate(transform, toPlayerVector, .15f);
         }
 
 
@@ -86,8 +93,8 @@ namespace Entities.EnemySystem
 
         private void Freeze()
         {
-            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.MoveTowardsTarget);
-            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.TurnTowardsTarget);
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.MoveTowardsTarget_Cahce);
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.TurnTowardsTarget_Cache);
         }
 
 
@@ -96,8 +103,8 @@ namespace Entities.EnemySystem
         /// </summary>
         private void UnFreeze()
         {
-            UpdateManager.Instance.SubscribeToGlobalUpdate(this.MoveTowardsTarget);
-            UpdateManager.Instance.SubscribeToGlobalUpdate(this.TurnTowardsTarget);
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.MoveTowardsTarget_Cahce);
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.TurnTowardsTarget_Cache);
         }
 
 
@@ -105,11 +112,12 @@ namespace Entities.EnemySystem
         private void DealDamage()
         {
             float playerHeight = this.playerTransform.localPosition.y;
-            Vector3 center = transform.localPosition.Set(y:playerHeight) + transform.forward * base.EnemyStats.Range;
+            Vector3 center = transform.localPosition.Set(y: playerHeight) + transform.forward * base.EnemyStats.Range;
             bool playerHit = EnemyPhysicsCheck.CheckSpherePlayer(center, this.attackRadius);
 
             var player = Player.Instance;
-            if (playerHit) {
+            if (playerHit)
+            {
                 player.PlayerStats.ProcessAttack(base.EnemyStats, this.basicAttackSkillInfo);
                 player.UpdateStatusProgress();
             }

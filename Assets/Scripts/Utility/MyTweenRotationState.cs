@@ -1,19 +1,19 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Utility
 {
     public class MyTweenRotationState : MyTweenState
     {
-        public bool IsTweening { get; private set; }
-
         private Transform rotatingTransform;
+        private Quaternion currentRotation;
         private Quaternion targetRotation;
         private float timeOfRotation;
 
         public void Init(Transform rotatingTransform, Vector3 targetDireciton, float time)
         {
             this.rotatingTransform = rotatingTransform;
+            this.currentRotation = rotatingTransform.rotation;
+
             this.targetRotation = Quaternion.LookRotation(targetDireciton);
             this.timeOfRotation = time;
 
@@ -27,11 +27,11 @@ namespace Utility
             timeProgression += Time.deltaTime;
             timeProgression = Mathf.Clamp(timeProgression, 0, timeOfRotation);
             var progress = (1f / timeOfRotation) * timeProgression;
-            //Debug.Log(progress);
-            rotatingTransform.rotation = Quaternion.Lerp(rotatingTransform.rotation, targetRotation, progress);
+            rotatingTransform.rotation = Quaternion.Lerp(currentRotation, targetRotation, progress);
 
             bool tweeningFinished = progress >= 1f;
-            this.IsTweening = !tweeningFinished;
+            base.IsTweening = !tweeningFinished;
+
             return tweeningFinished;
         }
 
