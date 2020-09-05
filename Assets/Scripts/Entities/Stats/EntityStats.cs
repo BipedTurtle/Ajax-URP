@@ -120,7 +120,7 @@ namespace Entities.Stats
 
 
         private static Func<float, float> ArmorFormula = (armor) => (0.1f) * Mathf.Sqrt(armor);
-        public float ProcessAttack(EntityStats inflicter, SkillInfo skill)
+        public (float damageTaken, bool isCritical) ProcessAttack(EntityStats inflicter, SkillInfo skill)
         {
             float dmgBlockedPercentage = ArmorFormula(this.Armor);
             float totalDamage = inflicter.BaseDamage * skill.BaseDamageModifier + inflicter.ExtraDamage * skill.ExtraDaamgeModifier;
@@ -132,14 +132,14 @@ namespace Entities.Stats
             damageTaken *= (isCriticalDamage) ? 2f : 1f;
 
             this.CurrentHealth -= damageTaken;
-            return damageTaken;
+            return (damageTaken, isCriticalDamage);
         }
 
 
         public void ProcessAttack(EntityStats inflicter, SkillInfo skill, Vector3 hitPosition)
         {
-            float damageTaken = this.ProcessAttack(inflicter, skill);
-            DamageUILoader.Instance.LoadDamageUI(damageTaken, hitPosition);
+            var attackInfo = this.ProcessAttack(inflicter, skill);
+            DamageUILoader.Instance.LoadDamageUI(attackInfo.damageTaken, hitPosition, attackInfo.isCritical);
         }
     }
 }

@@ -24,25 +24,19 @@ namespace GameUI
             foreach (Transform ui in transform)
                 this.damageUIs.Enqueue(ui.GetComponent<DamageUI>());
 
-            this.mainCamera = Camera.main;
             DontDestroyOnLoad(gameObject);
         }
 
 
         [SerializeField] private DamageUI damageUIPrefab;
         [SerializeField] private float offset = 15f;
-        private Camera mainCamera;
-        public void LoadDamageUI(float damage, Vector3 at)
+        public void LoadDamageUI(float damage, Vector3 at, bool isCritical = false)
         {
             DamageUI ui = this.GetInacitveUI();
 
             var anchoredPosition = TrackingCamera.GetAnchorPos(at, transform as RectTransform);
-            //Vector2 screenPoint = this.mainCamera.WorldToScreenPoint(at);
-            //RectTransform canvasSpace = transform as RectTransform;
-            //RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasSpace, screenPoint, null, out Vector2 anchoredPosition);
-
             Vector2 displayPos = anchoredPosition + Vector2.left * this.offset;
-            ui.DisplayDamage(spawnPos: displayPos, damage: damage);
+            ui.DisplayDamage(spawnPos: displayPos, damage: damage, isCritical: isCritical);
         }
 
 
