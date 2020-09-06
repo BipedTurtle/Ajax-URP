@@ -26,10 +26,11 @@ namespace Utility
         }
 
 
+        [SerializeField] private Vector3 offset;
         private void TrackPlayer()
         {
             float cameraY = transform.localPosition.y;
-            transform.localPosition = this.player.localPosition.Set(y: cameraY);
+            transform.localPosition = this.player.localPosition.Set(y: cameraY) + this.offset;
         }
     }
 }

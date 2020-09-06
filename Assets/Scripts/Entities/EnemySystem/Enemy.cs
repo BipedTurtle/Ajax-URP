@@ -6,6 +6,9 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
 using GameUI;
 using Utility.MyTweenLibrary;
+using PlayerSystem;
+using System;
+using Utility;
 
 namespace Entities.EnemySystem
 {
@@ -15,18 +18,25 @@ namespace Entities.EnemySystem
     {
         protected NavMeshAgent agent;
         protected Animator animator;
+        protected Transform playerTransform;
         protected virtual void Awake()
         {
             this.agent = GetComponent<NavMeshAgent>();
             this.animator = GetComponent<Animator>();
+            this.playerTransform = Player.Instance.transform;
+
+            this.DetectPlayer_Cache = this.DetectPlayer;
         }
 
 
+        private Action DetectPlayer_Cache;
         protected virtual void OnEnable()
         {
             this.LoadStats();
             this.agent.enabled = true;
             InteractionChart.Instance.AddEnemy(this);
+
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.DetectPlayer_Cache);
         }
 
 
@@ -62,11 +72,14 @@ namespace Entities.EnemySystem
             this.animator.SetTrigger("Die");
             this.agent.enabled = false;
             MyTween.Instance.Move(transform, transform.localPosition + Vector3.down * 2f, time: 1f, wait: this.sinkToGroundAfterThisMuchTime);
+
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.DetectPlayer_Cache);
         }
 
         protected abstract void Freeze();
         protected abstract void UnFreeze();
 
+        protected float SqrDistanceToPlayer => (this.playerTransform.transform.localPosition - transform.localPosition).Set(y: 0).sqrMagnitude;
 
         [SerializeField] private AssetReference enemyStatsArchetype;
         public EntityStats EnemyStats { get; private set; }
@@ -81,5 +94,17 @@ namespace Entities.EnemySystem
                 this.agent.stoppingDistance = this.EnemyStats.Range;
             };
         }
+
+
+        [SerializeField] private float playerDetectionRange = 15f;
+        protected bool playerDetected;
+        private void DetectPlayer()
+        {
+            if (Time.frameCount % 5 != 0)
+                return;
+
+            this.playerDetected = this.SqrDistanceToPlayer < Mathf.Pow(this.playerDetectionRange, 2);
+        }
+
     }
 }
