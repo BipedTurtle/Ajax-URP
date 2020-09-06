@@ -10,7 +10,6 @@ namespace Entities.EnemySystem
 {
     public class BasicMeleeEnemy : Enemy
     {
-        private Transform playerTransform;
         [SerializeField] private SkillInfoArchetype basicAttackArchetype;
         private SkillInfo basicAttackSkillInfo;
         #region Delegate Caches
@@ -22,7 +21,6 @@ namespace Entities.EnemySystem
         {
             base.Awake();
 
-            this.playerTransform = PlayerController.Instance.transform;
             this.basicAttackSkillInfo = this.basicAttackArchetype.Copy();
 
             this.ActAttack_Cache = this.ActAttack;
@@ -39,19 +37,27 @@ namespace Entities.EnemySystem
             this.UnFreeze();
         }
 
+
+        [SerializeField] private float detectionRange = 15f;
         protected virtual void MoveTowardsTarget()
         {
             if (Time.frameCount % 10 != 0)
                 return;
 
-            base.agent.SetDestination(this.playerTransform.localPosition);
+            base.animator.SetBool("Walk", base.playerDetected);
+            if (base.playerDetected)
+                base.agent.SetDestination(this.playerTransform.localPosition);
+            else
+                base.agent.ResetPath();
         }
 
 
         private MyTweenState rotationTweeningState;
         protected virtual void TurnTowardsTarget()
         {
-            //Debug.Log("turn");
+            if (!base.playerDetected)
+                return;
+
             if (this.rotationTweeningState != null && this.rotationTweeningState.IsTweening)
                 return;
 
@@ -71,33 +77,32 @@ namespace Entities.EnemySystem
         }
 
 
-        private float SqrDistanceToPlayer => (this.playerTransform.transform.localPosition - transform.localPosition).Set(y: 0).sqrMagnitude;
         private float nextAttackTime;
         protected virtual void ActAttack()
         {
-            Debug.Log("ActAttack");
             if (Time.frameCount % 15 != 0)
                 return;
 
             float range = (base.EnemyStats == null) ? 1f : base.EnemyStats.Range;
             bool isOutOfRange = this.SqrDistanceToPlayer > Mathf.Pow(range, 2);
             bool coolHasNotReturned = Time.timeSinceLevelLoad < this.nextAttackTime;
-            Debug.Log($"distance to player: {Math.Sqrt(this.SqrDistanceToPlayer)}");
             if (isOutOfRange | coolHasNotReturned)
                 return;
 
-            base.agent.ResetPath();
+            if (base.agent.enabled)
+                base.agent.ResetPath();
+            this.StopMoving();
             base.animator.SetTrigger("Attack");
-            //this.Freeze();
 
             this.nextAttackTime = Time.timeSinceLevelLoad + base.EnemyStats.AttackSpeed;
         }
 
-
         private void StopMoving()
         {
-
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.MoveTowardsTarget_Cahce);
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.TurnTowardsTarget_Cache);
         }
+
 
 
         protected override void Freeze()
@@ -119,6 +124,13 @@ namespace Entities.EnemySystem
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.MoveTowardsTarget_Cahce);
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.TurnTowardsTarget_Cache);
         }
+
+        private void ResumeMoving()
+        {
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.MoveTowardsTarget_Cahce);
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.TurnTowardsTarget_Cache);
+        }
+
 
 
         [SerializeField] private float attackRadius = .5f;
