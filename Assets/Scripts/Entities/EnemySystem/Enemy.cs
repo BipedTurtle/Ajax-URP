@@ -5,12 +5,13 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AI;
 using GameUI;
+using Utility.MyTweenLibrary;
 
 namespace Entities.EnemySystem
 {
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(Animator))]
-    public class Enemy : MonoBehaviour, IHittable
+    public abstract class Enemy : MonoBehaviour, IHittable
     {
         protected NavMeshAgent agent;
         protected Animator animator;
@@ -24,13 +25,8 @@ namespace Entities.EnemySystem
         protected virtual void OnEnable()
         {
             this.LoadStats();
+            this.agent.enabled = true;
             InteractionChart.Instance.AddEnemy(this);
-        }
-
-
-        protected virtual void OnDisable()
-        {
-            InteractionChart.Instance.RemoveEnemy(this);
         }
 
 
@@ -50,16 +46,26 @@ namespace Entities.EnemySystem
 
 
         [SerializeField] private AssetReference selfReference;
+        [SerializeField] private float sinkToGroundAfterThisMuchTime = 2.5f;
         private void Die()
         {
+            #region Quest-related
             QuestObjectBuilder.SetSubject(this.selfReference);
             QuestObjectBuilder.SetEventType(QuestEventType.Death);
             QuestObjectBuilder.SetObject(ReferenceCenter.Instance.emptyReference);
             var questObject = QuestObjectBuilder.Build();
             QuestLibrary.UpdateQuestProgress(questObject);
-            
-            Debug.Log("die");
+            #endregion
+
+            InteractionChart.Instance.RemoveEnemy(this);
+            this.Freeze();
+            this.animator.SetTrigger("Die");
+            this.agent.enabled = false;
+            MyTween.Instance.Move(transform, transform.localPosition + Vector3.down * 2f, time: 1f, wait: this.sinkToGroundAfterThisMuchTime);
         }
+
+        protected abstract void Freeze();
+        protected abstract void UnFreeze();
 
 
         [SerializeField] private AssetReference enemyStatsArchetype;

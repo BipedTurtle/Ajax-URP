@@ -6,6 +6,7 @@ using System;
 using UnityEngine;
 using UnityEngine.AI;
 using Utility;
+using Utility.MyTweenLibrary;
 
 namespace PlayerSystem
 {

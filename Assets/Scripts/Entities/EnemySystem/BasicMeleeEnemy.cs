@@ -4,6 +4,7 @@ using Managers;
 using PlayerSystem;
 using UnityEngine;
 using Utility;
+using Utility.MyTweenLibrary;
 
 namespace Entities.EnemySystem
 {
@@ -38,7 +39,6 @@ namespace Entities.EnemySystem
             this.UnFreeze();
         }
 
-
         protected virtual void MoveTowardsTarget()
         {
             if (Time.frameCount % 10 != 0)
@@ -51,6 +51,7 @@ namespace Entities.EnemySystem
         private MyTweenState rotationTweeningState;
         protected virtual void TurnTowardsTarget()
         {
+            //Debug.Log("turn");
             if (this.rotationTweeningState != null && this.rotationTweeningState.IsTweening)
                 return;
 
@@ -74,25 +75,36 @@ namespace Entities.EnemySystem
         private float nextAttackTime;
         protected virtual void ActAttack()
         {
+            Debug.Log("ActAttack");
             if (Time.frameCount % 15 != 0)
                 return;
 
             float range = (base.EnemyStats == null) ? 1f : base.EnemyStats.Range;
             bool isOutOfRange = this.SqrDistanceToPlayer > Mathf.Pow(range, 2);
             bool coolHasNotReturned = Time.timeSinceLevelLoad < this.nextAttackTime;
+            Debug.Log($"distance to player: {Math.Sqrt(this.SqrDistanceToPlayer)}");
             if (isOutOfRange | coolHasNotReturned)
                 return;
 
             base.agent.ResetPath();
             base.animator.SetTrigger("Attack");
-            this.Freeze();
+            //this.Freeze();
 
             this.nextAttackTime = Time.timeSinceLevelLoad + base.EnemyStats.AttackSpeed;
         }
 
 
-        private void Freeze()
+        private void StopMoving()
         {
+
+        }
+
+
+        protected override void Freeze()
+        {
+            base.agent.ResetPath();
+
+            UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.ActAttack_Cache);
             UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.MoveTowardsTarget_Cahce);
             UpdateManager.Instance.UnSubscribeFromGlobalUpdate(this.TurnTowardsTarget_Cache);
         }
@@ -101,8 +113,9 @@ namespace Entities.EnemySystem
         /// <summary>
         /// below methods get called by animation clips
         /// </summary>
-        private void UnFreeze()
+        protected override void UnFreeze()
         {
+            UpdateManager.Instance.SubscribeToGlobalUpdate(this.ActAttack_Cache);
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.MoveTowardsTarget_Cahce);
             UpdateManager.Instance.SubscribeToGlobalUpdate(this.TurnTowardsTarget_Cache);
         }
