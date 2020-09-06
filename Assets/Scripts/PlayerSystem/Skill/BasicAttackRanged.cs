@@ -41,9 +41,9 @@ namespace PlayerSystem.Skills
 
             bool attackCoolHasReturned = Time.time > this.nextActivation;
 
-            var toTargetVector = (PlayerController.Instance.Target.transform.localPosition - player.transform.localPosition).normalized;
-            var dotProduct = Vector3.Dot(player.transform.forward.Set(y: 0), toTargetVector.Set(y: 0));
-            bool aligned = dotProduct > .99f;
+            var toTargetVector = (PlayerController.Instance.Target.transform.localPosition - player.transform.localPosition);
+            var dotProduct = Vector3.Dot(player.transform.forward.Set(y: 0).normalized, toTargetVector.Set(y: 0).normalized);
+            bool aligned = dotProduct > .995f;
 
             if (attackCoolHasReturned & aligned) {
                 this.ShootArrow();
